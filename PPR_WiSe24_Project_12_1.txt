@@ -1,0 +1,6 @@
+remote_host = ppr.lehre.texttechnologylab.org
+remote_database = PPR_WiSe24_Project_12_1
+remote_user = PPR_WiSe24_Project_12_1_rw
+remote_password = kIn3ouOz
+remote_port = 27020
+remote_collection = speeches
