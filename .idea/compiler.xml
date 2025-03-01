@@ -84,7 +84,7 @@
           <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.4.14/logback-classic-1.4.14.jar" />
           <entry name="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.4.14/logback-core-1.4.14.jar" />
         </processorPath>
-        <module name="Uebung4" />
+        <module name="parliament_browser_12_1" />
       </profile>
     </annotationProcessing>
   </component>

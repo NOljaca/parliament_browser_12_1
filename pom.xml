@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.texttechnologylab.project</groupId>
-    <artifactId>MultimodalParliamentExplorer</artifactId>
+    <groupId>org.texttechnologylab.project.12_1</groupId>
+    <artifactId>parliament_browser_12_1</artifactId>
     <version>1.0</version>
 
     <properties>
