@@ -1,10 +1,10 @@
 package NLP.JCas;
 
-import NLP.Model.Speech;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import NLP.Model.Speech;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 
 /**
@@ -30,9 +30,9 @@ public class Jcasconverter {
         // 3) DocumentMetaData initialisieren
         DocumentMetaData dmd = new DocumentMetaData(jcas);
         dmd.setDocumentId(speech.getId());
-        dmd.setDocumentTitle("Rede von " + speech.getSpeaker());
         dmd.addToIndexes();
 
         return jcas;
     }
 }
+
