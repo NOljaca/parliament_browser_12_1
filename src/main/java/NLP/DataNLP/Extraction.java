@@ -1,5 +1,12 @@
 package NLP.DataNLP;
 
+
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
@@ -11,10 +18,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.fit.util.JCasUtil;
 import java.io.OutputStream;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Extraction {
@@ -27,54 +30,67 @@ public class Extraction {
      */
     public static List<String> extractTopics(JCas jcas) throws Exception {
         List<String> topics = new ArrayList<>();
-        StringBuilder text = new StringBuilder();
-
-        for (Sentence sentence : JCasUtil.select(jcas, Sentence.class)) {
-            text.append(sentence.getCoveredText()).append(" ");
-        }
-
         String apiUrl = "http://parlbert.lehre.texttechnologylab.org/v1/process";
 
-        try {
-            URL url = new URL(apiUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; utf-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setDoOutput(true);
+        for (Sentence sentence : JCasUtil.select(jcas, Sentence.class)) {
+            // Entfernen von Zeilenumbrüchen und unnötigen Leerzeichen, um den vollständigen Satz zu analysieren
+            String sentenceText = sentence.getCoveredText().replaceAll("\\n", " ").trim();
 
-            String jsonInput = String.format("{\"doc_text\": \"%s\", \"sentences\": [{\"text\": \"%s\", \"iBegin\": 0, \"iEnd\": %d}]}", text.toString().trim(), text.toString().trim(), text.length());
+            // JSON-Request für den aktuellen Satz
+            String jsonInput = String.format(
+                    "{\"doc_text\": \"%s\", \"sentences\": [{\"text\": \"%s\", \"iBegin\": 0, \"iEnd\": %d}]}",
+                    sentenceText, sentenceText, sentenceText.length()
+            );
 
-            try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = jsonInput.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
+            try {
+                URL url = new URL(apiUrl);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
 
-            int responseCode = conn.getResponseCode();
-            if (responseCode != HttpURLConnection.HTTP_OK) {
-                throw new Exception("HTTP request failed with code: " + responseCode);
-            }
-
-            try (InputStream is = conn.getInputStream(); Scanner scanner = new Scanner(is, "utf-8")) {
-                String jsonResponse = scanner.useDelimiter("\\A").next();
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(jsonResponse);
-                JsonNode labelsArray = rootNode.path("labels");
-
-                if (labelsArray.isArray()) {
-                    for (JsonNode labelNode : labelsArray) {
-                        topics.add(labelNode.path("label").asText());
-                    }
+                try (OutputStream os = conn.getOutputStream()) {
+                    byte[] input = jsonInput.getBytes("utf-8");
+                    os.write(input, 0, input.length);
                 }
+
+                if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    throw new Exception("HTTP request failed with code: " + conn.getResponseCode());
+                }
+
+                try (InputStream is = conn.getInputStream(); Scanner scanner = new Scanner(is, "utf-8")) {
+                    String jsonResponse = scanner.useDelimiter("\\A").next();
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    JsonNode rootNode = objectMapper.readTree(jsonResponse);
+                    JsonNode labelsArray = rootNode.path("labels");
+
+                    StringBuilder sentenceTopics = new StringBuilder("Sentence: ").append(sentenceText).append(" -> Topics: [");
+
+                    if (labelsArray.isArray()) {
+                        for (JsonNode labelNode : labelsArray) {
+                            String label = labelNode.path("label").asText();
+                            double score = labelNode.path("score").asDouble();
+                            sentenceTopics.append(String.format("[%s, %.16f], ", label, score));
+                        }
+                    }
+
+                    if (sentenceTopics.toString().endsWith(", ")) {
+                        sentenceTopics.setLength(sentenceTopics.length() - 2); // Letztes Komma und Leerzeichen entfernen
+                    }
+
+                    sentenceTopics.append("]");
+                    topics.add(sentenceTopics.toString());
+                }
+            } catch (Exception e) {
+                System.err.println("Error processing sentence: " + sentenceText);
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            System.err.println("Error during ParlBERT API call: " + e.getMessage());
-            e.printStackTrace();
         }
 
         return topics;
     }
-
+ 
 
 
     public static List<String> extractTokens(JCas jcas) {
@@ -124,7 +140,7 @@ public class Extraction {
             List<Sentiment> sentiments = JCasUtil.selectCovered(Sentiment.class, sentence);
             if (!sentiments.isEmpty()) {
                 for (Sentiment s : sentiments) {
-                    sb.append("  -> Sentiment: ").append(s.getSentiment()).append("\n");
+                    sb.append("  -> Sentiment: ").append(s.getSentiment()).append("\n"); // Anpassung
                 }
             } else {
                 sb.append("  -> (Keine Sentiment-Annotation gefunden)\n");
@@ -134,7 +150,27 @@ public class Extraction {
         return results;
     }
 
+    public static List<String> extractLemmas(JCas jcas) {
+        List<String> lemmas = new ArrayList<>();
+        for (Token token : JCasUtil.select(jcas, Token.class)) {
+            if (token.getLemma() != null) {
+                lemmas.add(token.getLemma().getValue());
+            } else {
+                lemmas.add(token.getCoveredText());
+            }
+        }
+        return lemmas;
+    }
+
+    public static List<String> extractSentences(JCas jcas) {
+        List<String> sentences = new ArrayList<>();
+        for (Sentence sentence : JCasUtil.select(jcas, Sentence.class)) {
+            sentences.add(sentence.getCoveredText());
+        }
+        return sentences;
+    }
 }
+
 
 
 
