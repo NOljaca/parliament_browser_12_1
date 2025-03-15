@@ -1,7 +1,6 @@
-package NLP;
+package NLP.DataNLP;
 
 import Database.MongoDBHandler;
-import NLP.DataNLP.Initialize;
 import com.mongodb.MongoCursorNotFoundException;
 import com.mongodb.MongoSocketReadException;
 import com.mongodb.client.MongoCollection;
@@ -12,7 +11,6 @@ import org.bson.Document;
 import NLP.JCas.Jcasconverter;
 import NLP.Model.Speech;
 import org.apache.uima.jcas.JCas;
-import NLP.DataNLP.Extraction;
 import NLP.JCas.Caseserialization;
 
 import java.io.File;
