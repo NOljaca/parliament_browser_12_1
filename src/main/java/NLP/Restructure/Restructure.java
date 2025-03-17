@@ -34,7 +34,7 @@ public class Restructure {
         try {
             MongoDBHandler mongoDBHandler = new MongoDBHandler();
             MongoCollection<Document> casDataColl = mongoDBHandler.getDatabase().getCollection("casData");
-            MongoCollection<Document> speechColl = mongoDBHandler.getDatabase().getCollection("speeches2");
+            MongoCollection<Document> speechColl = mongoDBHandler.getDatabase().getCollection("speeches");
 
             FindIterable<Document> casDataDocs = casDataColl.find();
             int processedCount = 0, updatedCount = 0, errorCount = 0;
