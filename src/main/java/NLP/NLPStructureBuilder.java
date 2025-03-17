@@ -2,6 +2,7 @@ package NLP;
 
 import NLP.Restructure.Restructure;
 import NLP.Xmi.XmiProcessor;
+import NLP.Xmi.XmiProcessor2;
 
 /**
  * Die Klasse `NLPStructureBuilder` führt die Verarbeitungspipeline für die NLP-Analyse aus.
@@ -23,13 +24,19 @@ public class NLPStructureBuilder {
     public static void main(String[] args) {
         // Flags zur Steuerung der Verarbeitungsschritte
         boolean runXmiProcessor = true;  // Setze auf `false`, um XmiProcessor zu deaktivieren
-        boolean runNLPMain = true;       // Setze auf `false`, um NLPMain zu deaktivieren
-        boolean runRestructure = true;   // Setze auf `false`, um Restructure zu deaktivieren
+        boolean runXmiProcessor2 = true; // Setze auf `false`, um XmiProcessor2 zu deaktivieren
+        boolean runNLPMain = false;        // Setze auf `false`, um NLPMain zu deaktivieren
+        boolean runRestructure = true;    // Setze auf `false`, um Restructure zu deaktivieren
 
         try {
             if (runXmiProcessor) {
                 System.out.println("Starte XmiProcessor...");
                 XmiProcessor.main(new String[]{}); // Führt die Verarbeitung der XMI-Dateien aus
+                System.out.println("XmiProcessor abgeschlossen.");
+            }
+            if (runXmiProcessor2) {
+                System.out.println("Starte XmiProcessor2...");
+                XmiProcessor2.main(new String[]{}); // Führt die Verarbeitung der XMI-Dateien aus
                 System.out.println("XmiProcessor abgeschlossen.");
             }
 
