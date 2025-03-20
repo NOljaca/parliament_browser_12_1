@@ -64,8 +64,6 @@ public interface MemberInt {
      */
     Document toDocument();
 
-    String getNameAndSurname();
-
     /**
      * @return HTML-snippet for this member for the homepage.
      */

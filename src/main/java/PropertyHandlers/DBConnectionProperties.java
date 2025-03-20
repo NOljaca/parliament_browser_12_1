@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Property-class for loading the db-connection data.
+ * @author Amal
+ */
 public class DBConnectionProperties extends Properties {
 
     public DBConnectionProperties(String propertiesFilePath) {

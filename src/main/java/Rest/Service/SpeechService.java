@@ -80,4 +80,28 @@ public class SpeechService {
         ctx.status(200);
         System.out.println("Done!");
     }
+
+    /**
+     * Method for speech-search-page-rendering.
+     * @param ctx
+     * @author Muhammed
+     */
+    public void renderSpeechSearchPage(Context ctx) {
+        ctx.render("speechsearch.ftl");
+    }
+
+    /**
+     * Method for fetching a speech by a given substring.
+     * @param ctx
+     * @author Muhammed
+     */
+    public void fetchSpeeches(Context ctx) {
+        String text = ctx.queryParam("text");
+        if (text == null || text.isEmpty()) {
+            ctx.status(400).result("Es muss ein Text eingegeben werden!");
+        }
+        Map<String, Object> result = mongoDBHandler.getSpeechesByText(text);
+        ctx.status(200).json(result);
+
+    }
 }

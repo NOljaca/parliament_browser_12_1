@@ -47,13 +47,8 @@ public class NLPService {
         List<SessionInt> sessions = mongoDBHandler.getSessions();
         List<String> dates = mongoDBHandler.getAllSpeechDates();
         List<FractionInt> fractions = mongoDBHandler.getFractions();
-        List<SpeakerInt> speakers = mongoDBHandler.getAllSpeakers();
-        List<SpeakerJSON> speakersJson = new ArrayList<>();
+        List<SpeakerJSON> speakersJson = mongoDBHandler.getAllSpeakersJson();
 
-        for (SpeakerInt speaker : speakers) {
-            // Create json-structured speaker-object as freemarker and javascript cannot handle cross-connected classes.
-            speakersJson.add(new SpeakerJSON(speaker.getId(), speaker.getNameAndSurname(), speaker.getFraction().getShortName()));
-        }
         ObjectMapper mapper = new ObjectMapper();
         String speakersJsonString = "";
         try {
@@ -64,12 +59,10 @@ public class NLPService {
         }
 
         response.put("speakersJsonString", speakersJsonString);
-
         response.put("sessions", sessions);
         response.put("speeches", speeches);
         response.put("dates", dates);
         response.put("fractions", fractions);
-        response.put("speakers", speakers);
         response.put("speakersJson", speakersJson);
         ctx.res().setCharacterEncoding("UTF-8");
         ctx.render("nlpcharts.ftl", response);

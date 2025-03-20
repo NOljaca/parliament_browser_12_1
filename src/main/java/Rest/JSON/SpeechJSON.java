@@ -19,6 +19,11 @@ public class SpeechJSON {
         this.speakerId = speakerId;
     }
 
+    public SpeechJSON(String id, String speakerId) {
+        this.speakerId = speakerId;
+        this.speechId = id;
+    }
+
     public String getSpeakerId() {
         return speakerId;
     }
