@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Implementation of {@link SpeakerInt}. Inherits from {@link Bundestag.Persons.Int.MemberInt}. Stores all attributes of speaker from xml-file.
+ * @author Muhammed
  */
 public class Speaker_File_Impl extends Member_File_Impl implements SpeakerInt {
 
@@ -41,12 +42,13 @@ public class Speaker_File_Impl extends Member_File_Impl implements SpeakerInt {
     }
 
     @Override
-    public Document toDocument() {
-        throw new UnsupportedOperationException("File-Class does not support Document operations!");
+    public String getNameAndSurname() {
+        return getName() + " " + getSurname();
     }
 
-    public void setSpeeches(List<SpeechInt> speeches) {
-        this.speeches = speeches;
+    @Override
+    public Document toDocument() {
+        throw new UnsupportedOperationException("File-Class does not support Document operations!");
     }
 
     @Override
@@ -59,6 +61,10 @@ public class Speaker_File_Impl extends Member_File_Impl implements SpeakerInt {
         return getSpeech().size();
     }
 
+    public void setSpeeches(List<SpeechInt> speeches) {
+        this.speeches = speeches;
+    }
+
     /**
      * Adds given instance of {@link Speech_File_Impl} to the list of speeches.
      * @param speech instance of {@link Speech_File_Impl} which should be added to the list.
@@ -66,6 +72,7 @@ public class Speaker_File_Impl extends Member_File_Impl implements SpeakerInt {
     public void addSpeech(Speech_File_Impl speech) {
         this.speeches.add(speech);
     }
+
     @Override
     public List<Speech_MongoDB_Impl> getSortedSpeeches() {
         return List.of();

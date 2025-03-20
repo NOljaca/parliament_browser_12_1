@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Interface for session. Stores all attributes of session.
+ * @author Muhammed
  */
 public interface SpeechInt {
 
@@ -41,11 +42,15 @@ public interface SpeechInt {
      */
     AgendaInt getAgenda();
 
+    String getSessionId();
+
     /**
      * Create Document with key-value pairs that match the attributes of speech.
      * @return created document with the attributes in the specific fields.
      */
     Document toDocument();
+
+    String getContentWithComments();
 
     String getSpeakerId();
 

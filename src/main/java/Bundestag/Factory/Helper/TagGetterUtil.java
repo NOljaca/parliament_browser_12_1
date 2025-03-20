@@ -8,6 +8,7 @@ public class TagGetterUtil {
 
     /**
      * Util class for getting text-values of specific tags.
+     * @author Muhammed
      */
     public TagGetterUtil() {}
 
@@ -16,6 +17,8 @@ public class TagGetterUtil {
      * @param element Element in which the given tag is.
      * @param tag Needed tag for the text-value.
      * @return text-value of given tag.
+     *
+     * @author Muhammed
      */
     public static String getTextValueOfTagFromElement(Element element, String tag) {
         NodeList nodeList = element.getElementsByTagName(tag);
@@ -32,6 +35,8 @@ public class TagGetterUtil {
      * @param document Document in which the given tag is.
      * @param tag Needed tag for the text-value.
      * @return text-value of given tag.
+     *
+     * @author Muhammed
      */
     public static String getTextValueOfTagFromDocument(Document document, String tag) {
         NodeList nodeList = document.getElementsByTagName(tag);

@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Implementation of {@link SessionInt}. Stores all attributes of a session from the xml-file.
+ * @author Muhammed
  */
 public class Session_File_Impl implements SessionInt {
 
@@ -71,6 +72,16 @@ public class Session_File_Impl implements SessionInt {
 
     public void addAgenda(AgendaInt agenda) {
         this.agenda.add(agenda);
+    }
+
+    @Override
+    public String getDateString() {
+        return "";
+    }
+
+    @Override
+    public int getAgendaSize() {
+        return 0;
     }
 
     @Override

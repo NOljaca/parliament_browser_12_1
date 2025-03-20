@@ -9,6 +9,7 @@ import java.util.Set;
 
 /**
  * Implementation of {@link FractionInt}. Stores attributes of fractions which are fetched from the xml-file.
+ * @author Muhammed
  */
 public class Fraction_File_Impl implements FractionInt {
 

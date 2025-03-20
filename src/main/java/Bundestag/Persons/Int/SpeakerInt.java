@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Interface for speaker. Inherits from {@link MemberInt}. Stores all attributes of speaker.
+ * @author Muhammed
  */
 public interface SpeakerInt extends MemberInt{
 

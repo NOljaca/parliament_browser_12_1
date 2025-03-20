@@ -3,6 +3,10 @@ package Rest.Controller;
 import Database.MongoDBHandler;
 import Rest.Service.HomepageService;
 import io.javalin.http.Context;
+import io.javalin.openapi.HttpMethod;
+import io.javalin.openapi.OpenApi;
+import io.javalin.openapi.OpenApiResponse;
+
 
 /**
  * Controller of homepage-related api-requests. Service methods are called for each endpoint.
@@ -38,9 +42,17 @@ public class HomepageController {
      * @param ctx
      *
      * @author Amal
+     * OpenApi added by Muhammed
      */
+    @OpenApi(
+            path = "/home",
+            methods = HttpMethod.GET,
+            summary = "Get homepage",
+            description = "Fetches the homepage view.",
+            tags = {"Homepage"},
+            responses = {@OpenApiResponse(status = "200")}
+    )
     public void getHomepage(Context ctx) {
         homepageService.renderHomePage(ctx);
     }
-
 }

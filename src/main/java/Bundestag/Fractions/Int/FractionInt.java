@@ -8,6 +8,7 @@ import java.util.Set;
 
 /**
  * Fraction interface - To store fraction-attributes.
+ * @author Muhammed
  */
 public interface FractionInt {
 

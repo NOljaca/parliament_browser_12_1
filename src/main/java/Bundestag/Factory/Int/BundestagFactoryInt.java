@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * Factory interface - All the actions in the program are executed from here (Reading xmls, mapping to classes, creating HTMLs)
+ * @author Muhammed
  */
 public interface BundestagFactoryInt {
 

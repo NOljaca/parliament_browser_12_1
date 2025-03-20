@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * Interface for agenda. Stores all attributes of agenda.
+ * @author Muhammed
  */
 public interface AgendaInt {
 

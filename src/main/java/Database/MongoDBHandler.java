@@ -9,6 +9,7 @@ import Bundestag.Session.Int.SessionInt;
 import Bundestag.Session.Int.SpeechInt;
 import Database.MongoDB_Impl.*;
 import PropertyHandlers.DBConnectionProperties;
+import Rest.JSON.SpeakerJSON;
 import Rest.JSON.SpeechJSON;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -16,9 +17,7 @@ import com.mongodb.client.*;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import javax.print.Doc;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -327,12 +326,14 @@ public class MongoDBHandler {
         Document filter = new Document("session", Integer.parseInt(sessionId));
         Document projection = new Document("id", 1).append("session", 1).append("speaker", 1).append("agenda", 1);
         for (Document doc : collection.find(filter).projection(projection)) {
-            String speechId = doc.getString("id");
-            String speakerId = doc.getString("speaker");
-            String speakerName = getSpeakerNameAndSurname(speakerId);
-            String agendaId = doc.getString("agenda");
-            SpeechJSON speechJSON = new SpeechJSON(sessionId, speakerName, speechId, agendaId, speakerId);
-            speeches.add(speechJSON);
+            if (doc.getString("id").startsWith("ID")) {
+                String speechId = doc.getString("id");
+                String speakerId = doc.getString("speaker");
+                String speakerName = getSpeakerNameAndSurname(speakerId);
+                String agendaId = doc.getString("agenda");
+                SpeechJSON speechJSON = new SpeechJSON(sessionId, speakerName, speechId, agendaId, speakerId);
+                speeches.add(speechJSON);
+            }
         }
         return speeches;
     }
@@ -406,6 +407,30 @@ public class MongoDBHandler {
             Document speakerDoc = new Document().append("id", id).append("name", name).append("surname", surname).append("fraction", fraction).append("speeches", speeches);
             SpeakerInt speakerInt = new Speaker_MongoDB_Impl(mongoDatabase, speakerDoc);
             speakers.add(speakerInt);
+        }
+        return speakers;
+    }
+
+    /**
+     * This Method retrieves all SpeakerInt Objects from the speakers collection mapped to the SpeakerJSON-class
+     * @return a list of SpeakerJSON objects representing all Speakers in the collection
+     *
+     * @author Amal
+     */
+
+    public List<SpeakerJSON> getAllSpeakersJson() {
+        List<SpeakerJSON> speakers = new ArrayList<>();
+        MongoCollection<Document> collection = mongoDatabase.getCollection("speakers");
+        Document projection = new Document("id", 1).append("name", 1).append("surname", 1)
+                .append("fraction", 1).append("speeches", 1);
+        FindIterable<Document> sortedSpeakers = collection.find().projection(projection).sort(new Document("fraction", 1).append("name", 1).append("surname", 1));
+        for (Document speaker : sortedSpeakers) {
+            String id = speaker.getString("id");
+            String name = speaker.getString("name");
+            String surname = speaker.getString("surname");
+            String fraction = speaker.getString("fraction");
+            SpeakerJSON speakerJson = new SpeakerJSON(id, name + " " + surname, fraction);
+            speakers.add(speakerJson);
         }
         return speakers;
     }
@@ -792,4 +817,28 @@ public class MongoDBHandler {
         }
         return topicsMap;
     }
+
+    /**
+     * Fetches every speech which contains given text. Limited to 100 speeches due to performance issues.
+     * @param text substring for search.
+     * @return map with json-format which contains the list of speechJsons and the amount of speeches that were found.
+     * @author Muhammed
+     */
+    public Map<String, Object> getSpeechesByText(String text) {
+        List<SpeechJSON> speeches = new ArrayList<>();
+        MongoCollection<Document> speechCollection = mongoDatabase.getCollection("speeches");
+        FindIterable<Document> speechFind = speechCollection.find(
+                new Document("content", new Document("$regex", text).append("$options", "i"))).limit(100);
+        long amount = speechCollection.countDocuments(new Document("content", new Document("$regex", text).append("$options", "i")));
+        for (Document document : speechFind) {
+            String id = document.getString("id");
+            String speakerId = document.getString("speaker");
+            speeches.add(new SpeechJSON(id, speakerId));
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("speeches", speeches);
+        result.put("amount", amount);
+        return result;
+    }
+
 }

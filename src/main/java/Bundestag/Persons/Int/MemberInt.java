@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 /**
  * Interface for members. Stores all attributes of a member.
+ * @author Muhammed
  */
 public interface MemberInt {
 
@@ -55,13 +56,13 @@ public interface MemberInt {
      */
     FractionInt getFraction();
 
+    String getNameAndSurname();
+
     /**
      * Create Document with key-value pairs that match the attributes of member.
      * @return created document with the attributes in the specific fields.
      */
     Document toDocument();
-
-    String getNameAndSurname();
 
     /**
      * @return HTML-snippet for this member for the homepage.

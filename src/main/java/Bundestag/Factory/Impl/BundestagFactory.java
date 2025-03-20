@@ -20,6 +20,8 @@ import java.util.Map;
 /**
  * Implementation of {@link BundestagFactoryInt} that reads xml-files, creates instances of classes
  * and creates HTML-files.
+ *
+ * @author Muhammed
  */
 public class BundestagFactory implements BundestagFactoryInt {
 
@@ -35,6 +37,8 @@ public class BundestagFactory implements BundestagFactoryInt {
 
     /**
      * Class for handling the execution of all actions in the program (Reading xmls, mapping to classes, creating HTMLs).
+     *
+     * @author Muhammed
      */
     public BundestagFactory() {
         this.mdBStammdatenReader = new MdBStammdatenReader();
@@ -92,6 +96,11 @@ public class BundestagFactory implements BundestagFactoryInt {
         return sessionMap;
     }
 
+    /**
+     * Starts the scraping, parses protocol-documents.
+     * @throws FileNotFoundException
+     * @author Muhammed
+     */
     @Override
     public void createBundestag() throws FileNotFoundException {
         System.out.println("reading sessions");

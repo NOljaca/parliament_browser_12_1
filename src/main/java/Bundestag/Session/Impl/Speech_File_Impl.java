@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Implementation of {@link SpeechInt}. Stores all attributes of a speech from the xml-file.
+ * @author Muhammed
  */
 public class Speech_File_Impl implements SpeechInt {
 
@@ -92,8 +93,18 @@ public class Speech_File_Impl implements SpeechInt {
     }
 
     @Override
+    public String getSessionId() {
+        return String.valueOf(getSession().getId());
+    }
+
+    @Override
     public Document toDocument() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getContentWithComments() {
+        return "";
     }
 
     @Override

@@ -23,6 +23,10 @@ import java.util.*;
 
 import static Bundestag.Factory.Helper.TagGetterUtil.getTextValueOfTagFromElement;
 
+/**
+ * Helper-class for reading the speaker-meta-data
+ * @author Muhammed
+ */
 public class MdBStammdatenReader {
 
     //To access the path from filepaths.properties
@@ -32,6 +36,8 @@ public class MdBStammdatenReader {
      * Contains methods for reading the MDB_STAMMDATEN.XML-file.
      * Also contains the methods to create instances of {@link FractionInt} and {@link MemberInt}.
      * Used by {@link Bundestag.Factory.Impl.BundestagFactory}.
+     *
+     * @author Muhammed
      */
     public MdBStammdatenReader() {
         properties = new Properties();
@@ -40,6 +46,8 @@ public class MdBStammdatenReader {
     /**
      * Reads the xml-file and returns it as a Document.
      * @return document of class Document --> Needed for parsing.
+     *
+     * @author Muhammed
      */
     private Document readMdBStammdaten() {
         try (InputStream inputStream = new FileInputStream("filepaths.properties")) {
@@ -63,6 +71,8 @@ public class MdBStammdatenReader {
      *                  Given by {@link Bundestag.Factory.Impl.BundestagFactory} for storing purposes.
      * @param fractionMap Map with keys of {@link String} and values of {@link FractionInt}.
      *                  Given by {@link Bundestag.Factory.Impl.BundestagFactory} for storing purposes.
+     *
+     * @author Muhammed
      */
     public void createMembersAndFractions(Map<String, MemberInt> memberMap, Map<String, FractionInt> fractionMap){
         Document document = readMdBStammdaten();
@@ -103,6 +113,8 @@ public class MdBStammdatenReader {
      * @param fractionMap Map with keys of {@link String} and values of {@link FractionInt}.
      *                      Given by {@link Bundestag.Factory.Impl.BundestagFactory} for storing purposes.
      * @return FractionInt instance with all the attributes from fraction of member.
+     *
+     * @author Muhammed
      */
     private FractionInt mapFractionAttributes(Element mdbElement, Map<String, FractionInt> fractionMap) {
         try {
@@ -128,6 +140,8 @@ public class MdBStammdatenReader {
      * @param mdbElement Element tag for the specific member from which the member-attributes are needed.
      * @param fraction fraction of member.
      * @return Member_File_Impl instance with all the attributes from member.
+     *
+     * @author Muhammed
      */
     private Member_File_Impl mapMemberAttributes(Element mdbElement, FractionInt fraction) {
         try {

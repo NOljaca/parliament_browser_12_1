@@ -52,7 +52,7 @@ public class RESTHandler {
             config.staticFiles.add("/public");
             config.registerPlugin(new OpenApiPlugin(pluginConfig -> {
                 pluginConfig.withDefinitionConfiguration((version, definition) -> {
-                    definition.withOpenApiInfo(info -> info.setTitle("Multimodal Parliament Browser"));
+                    definition.withInfo(info -> info.setTitle("Multimodal Parliament Browser"));
                 });
             }));
             config.registerPlugin(new SwaggerPlugin());
@@ -62,6 +62,10 @@ public class RESTHandler {
                 path("speeches", () -> {
                     get(speechController::getSessionsPage);
                     path("speechdetails", () -> get(speechController::getSpeechDetailsPage));
+                    path("searchspeeches", () -> {
+                        get(speechController::getSpeechSearch);
+                        path("fetchspeeches", () -> get(speechController::getSearchSpeeches));
+                    });
                 });
                 path("export", () -> {
                     path("sessions", () -> get(exportController::getSessionExports));

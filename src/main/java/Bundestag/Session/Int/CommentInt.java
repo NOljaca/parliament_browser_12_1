@@ -4,6 +4,7 @@ import org.bson.Document;
 
 /**
  * Interface for agenda. Stores all attributes of comment.
+ * @author Muhammed
  */
 public interface CommentInt {
 

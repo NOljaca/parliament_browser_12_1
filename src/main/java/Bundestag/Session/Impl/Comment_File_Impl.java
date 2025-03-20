@@ -5,6 +5,7 @@ import org.bson.Document;
 
 /**
  * Implementation of {@link CommentInt}. Stores all attributes of a comment from the xml-file.
+ * @author Muhammed
  */
 public class Comment_File_Impl implements CommentInt {
 
@@ -38,6 +39,7 @@ public class Comment_File_Impl implements CommentInt {
     public String getSpeechId() {
         return speechId;
     }
+
 
     @Override
     public Document toDocument() {
