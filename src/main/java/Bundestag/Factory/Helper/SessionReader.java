@@ -33,6 +33,10 @@ import java.util.*;
 import static Bundestag.Factory.Helper.TagGetterUtil.getTextValueOfTagFromDocument;
 import static Bundestag.Factory.Helper.TagGetterUtil.getTextValueOfTagFromElement;
 
+/**
+ * Helper-class for parsing the protocol-xmls.
+ * @author Muhammed
+ */
 public class SessionReader {
 
     //To access the path from filepaths.properties
@@ -44,6 +48,8 @@ public class SessionReader {
      * Contains methods for reading the session-xml-files.
      * Also contains the methods to create instances of {@link SpeechInt}, {@link SpeakerInt} and {@link AgendaInt}.
      * Used by {@link Bundestag.Factory.Impl.BundestagFactory}.
+     *
+     * @author Muhammed
      */
     public SessionReader() {
         properties = new Properties();
@@ -52,6 +58,8 @@ public class SessionReader {
     /**
      * Reads the xml-files and returns it as a List of Documents.
      * list of documents with class Document --> Needed for parsing.
+     *
+     * @author Muhammed
      */
     public void readSessionXMLs() {
         try (InputStream inputStream = new FileInputStream("filepaths.properties")) {
@@ -82,6 +90,8 @@ public class SessionReader {
     /**
      * Creates all sessions of class {@link SessionInt} and stores them within a map.
      * @param sessionMap To store the sessions. Given by {@link Bundestag.Factory.Impl.BundestagFactory}
+     *
+     * @author Muhammed
      */
     public void createSessions(Map<Integer, SessionInt> sessionMap) {
         for (Document document : sessionXMLs) {
@@ -96,6 +106,8 @@ public class SessionReader {
      * Maps the attributes of a session to the class {@link SessionInt}.
      * @param document The session-xml-file as Document.
      * @return instance of class {@link Session_File_Impl} for given xml-file.
+     *
+     * @author Muhammed
      */
     private Session_File_Impl mapSessionAttributes(Document document) {
         try {
@@ -123,6 +135,8 @@ public class SessionReader {
      * Creates all sessions of class {@link AgendaInt} and stores them within a list.
      * @param sessionMap To put the created agenda instance into the specific session instance and vice versa.
      * @param agendaList To store the agendas. Given by {@link Bundestag.Factory.Impl.BundestagFactory}
+     *
+     * @author Muhammed
      */
     public void createAgenda(Map<Integer, SessionInt> sessionMap, List<AgendaInt> agendaList) {
         for (Document document : sessionXMLs) {
@@ -157,6 +171,8 @@ public class SessionReader {
      * Maps the attributes of an agenda to the class {@link AgendaInt}.
      * @param agendaElement The specific Element for the needed agenda.
      * @return instance of {@link Agenda_File_Impl} with all attributes mapped.
+     *
+     * @author Muhammed
      */
     private Agenda_File_Impl mapAgendaAttributes(Element agendaElement) {
         StringBuilder titleBuilder = new StringBuilder();
@@ -189,6 +205,8 @@ public class SessionReader {
      * @param sessionMap To map session attributes to speech attributes.
      * @param agendaList To map agenda attributes to speech attributes and vice versa.
      * @param fractionMap To map fraction attributes to speaker attributes and vice versa.
+     *
+     * @author Muhammed
      */
     public void createSpeechesAndSpeakers(List<SpeechInt> speechList, Map<String, MemberInt> memberMap, Map<String, SpeakerInt> speakerMap, Map<Integer, SessionInt> sessionMap, List<AgendaInt> agendaList, Map<String, FractionInt> fractionMap, List<CommentInt> commentsList) {
         for (Document document : sessionXMLs) {
@@ -255,6 +273,8 @@ public class SessionReader {
      * @param sessionMap To get the specific stored session instance.
      * @param document To get attributes of the document in which the speech is in.
      * @return instance of {@link SessionInt} for specific speech.
+     *
+     * @author Muhammed
      */
     private SessionInt getSpeechSession(Map<Integer, SessionInt> sessionMap, Document document) {
         NodeList sessionTitle = document.getElementsByTagName("sitzungstitel");
@@ -272,6 +292,8 @@ public class SessionReader {
      * @param speechAgendaId ID of agenda from session-xml-file for matching purposes.
      * @param speechSession Session instance for this specific speech.
      * @return instance of {@link AgendaInt} for specific speech.
+     *
+     * @author Muhammed
      */
     private AgendaInt getSpeechAgenda(List<AgendaInt> agendaList, String speechAgendaId, SessionInt speechSession) {
         for (AgendaInt agenda : agendaList) {
@@ -289,6 +311,8 @@ public class SessionReader {
      * @param fractionMap To put speakers who are not in the memberMap into the fraction "Plos" as we don't have the info.
      * @param speakerMap To store the created {@link SpeakerInt} instances.
      * @return instance of class {@link SpeakerInt} for specific speech.
+     *
+     * @author Muhammed
      */
     private SpeakerInt getSpeakerOfSpeech(Element speechElement, Map<String, MemberInt> memberMap, Map<String, FractionInt> fractionMap, Map<String, SpeakerInt> speakerMap) {
         Element speakerElement = (Element) speechElement.getElementsByTagName("redner").item(0);

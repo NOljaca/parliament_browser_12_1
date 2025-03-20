@@ -4,6 +4,7 @@ import org.bson.Document;
 
 /**
  * Interface for agenda. Stores all attributes of comment.
+ * @author Muhammed
  */
 public interface CommentInt {
 
@@ -20,7 +21,6 @@ public interface CommentInt {
     String getContent();
 
     String getSpeechId();
-    String getCommenterId();
 
     Document toDocument();
 }

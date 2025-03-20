@@ -4,6 +4,7 @@ import Bundestag.Fractions.Int.FractionInt;
 import Bundestag.Persons.Int.SpeakerInt;
 import Bundestag.Session.Impl.Speech_File_Impl;
 import Bundestag.Session.Int.SpeechInt;
+import Database.MongoDB_Impl.Speech_MongoDB_Impl;
 import org.bson.Document;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.List;
 
 /**
  * Implementation of {@link SpeakerInt}. Inherits from {@link Bundestag.Persons.Int.MemberInt}. Stores all attributes of speaker from xml-file.
+ * @author Muhammed
  */
 public class Speaker_File_Impl extends Member_File_Impl implements SpeakerInt {
 
@@ -40,8 +42,23 @@ public class Speaker_File_Impl extends Member_File_Impl implements SpeakerInt {
     }
 
     @Override
+    public String getNameAndSurname() {
+        return getName() + " " + getSurname();
+    }
+
+    @Override
     public Document toDocument() {
         throw new UnsupportedOperationException("File-Class does not support Document operations!");
+    }
+
+    @Override
+    public String getBirthDateString() {
+        return "";
+    }
+
+    @Override
+    public int getSpeechAmount() {
+        return getSpeech().size();
     }
 
     public void setSpeeches(List<SpeechInt> speeches) {
@@ -54,5 +71,10 @@ public class Speaker_File_Impl extends Member_File_Impl implements SpeakerInt {
      */
     public void addSpeech(Speech_File_Impl speech) {
         this.speeches.add(speech);
+    }
+
+    @Override
+    public List<Speech_MongoDB_Impl> getSortedSpeeches() {
+        return List.of();
     }
 }

@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 /**
  * Implementation of {@link MemberInt}. Stores all attributes of a member from the xml-file.
+ * @author Muhammed
  */
 public class Member_File_Impl implements MemberInt {
 
@@ -121,6 +122,11 @@ public class Member_File_Impl implements MemberInt {
     @Override
     public FractionInt getFraction() {
         return fraction;
+    }
+
+    @Override
+    public String getNameAndSurname() {
+        return getName() + " " + getSurname();
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Implementation of {@link AgendaInt}. Stores all attributes of an agenda from the xml-file.
+ * @author Muhammed
  */
 public class Agenda_File_Impl implements AgendaInt {
 

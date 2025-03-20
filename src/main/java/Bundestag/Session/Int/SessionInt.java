@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Interface for session. Stores all attributes of session.
+ * @author Muhammed
  */
 public interface SessionInt {
 
@@ -36,6 +37,9 @@ public interface SessionInt {
      * @param agenda instance of {@link AgendaInt} which should be added to the list.
      */
     void addAgenda(AgendaInt agenda);
+
+    String getDateString();
+    int getAgendaSize();
 
     /**
      * Create Document with key-value pairs that match the attributes of session.
