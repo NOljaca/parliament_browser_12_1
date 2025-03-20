@@ -8,6 +8,10 @@ import org.bson.Document;
 
 import java.time.LocalDate;
 
+/**
+ * Implementation of MemberInt. Stores member-attributes to map for the database.
+ * @author Amal
+ */
 public class Member_MongoDB_Impl implements MemberInt {
     private MemberInt member;
     private Document document;
@@ -72,6 +76,16 @@ public class Member_MongoDB_Impl implements MemberInt {
         return null;
     }
 
+    @Override
+    public String getNameAndSurname() {
+        return getName() + " " + getSurname();
+    }
+
+    /**
+     * Creates a document of a member-object.
+     * @return document mapped with member-attributes.
+     * @author Amal
+     */
     @Override
     public Document toDocument() {
         Document memberDocument = new Document();
