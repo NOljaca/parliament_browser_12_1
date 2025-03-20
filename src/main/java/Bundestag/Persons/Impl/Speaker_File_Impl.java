@@ -4,6 +4,7 @@ import Bundestag.Fractions.Int.FractionInt;
 import Bundestag.Persons.Int.SpeakerInt;
 import Bundestag.Session.Impl.Speech_File_Impl;
 import Bundestag.Session.Int.SpeechInt;
+import Database.MongoDB_Impl.Speech_MongoDB_Impl;
 import org.bson.Document;
 
 import java.time.LocalDate;
@@ -48,11 +49,25 @@ public class Speaker_File_Impl extends Member_File_Impl implements SpeakerInt {
         this.speeches = speeches;
     }
 
+    @Override
+    public String getBirthDateString() {
+        return "";
+    }
+
+    @Override
+    public int getSpeechAmount() {
+        return getSpeech().size();
+    }
+
     /**
      * Adds given instance of {@link Speech_File_Impl} to the list of speeches.
      * @param speech instance of {@link Speech_File_Impl} which should be added to the list.
      */
     public void addSpeech(Speech_File_Impl speech) {
         this.speeches.add(speech);
+    }
+    @Override
+    public List<Speech_MongoDB_Impl> getSortedSpeeches() {
+        return List.of();
     }
 }

@@ -40,17 +40,8 @@ public class Comment_File_Impl implements CommentInt {
     }
 
     @Override
-    public String getCommenterId() {
-        return commenterId;
-    }
-
-    @Override
     public Document toDocument() {
         return null;
-    }
-
-    public void setCommenterId(String commenterId) {
-        this.commenterId = commenterId;
     }
 
     public void setSpeechId(String speechId) {
