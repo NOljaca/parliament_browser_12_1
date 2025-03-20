@@ -20,7 +20,6 @@ public interface CommentInt {
     String getContent();
 
     String getSpeechId();
-    String getCommenterId();
 
     Document toDocument();
 }

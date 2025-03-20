@@ -5,14 +5,22 @@ import Bundestag.Fractions.Int.FractionInt;
 import Bundestag.Persons.Int.SpeakerInt;
 import Bundestag.Session.Impl.Speech_File_Impl;
 import Bundestag.Session.Int.SpeechInt;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
+/**
+ * Implementation of SpeakerInt. Stores speaker-attributes to map for the database.
+ * @author Amal
+ */
 public class Speaker_MongoDB_Impl implements SpeakerInt {
     private SpeakerInt speaker;
     private MongoDatabase database;
@@ -40,11 +48,8 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
         id = speakerDoc.getString("id");
     }
 
-    public String getIdDocument() {return speakerDoc.getString("id");}
-    public String getNameDocument() {return speakerDoc.getString("name");}
-    public String getNachnameDocument() {return speakerDoc.getString("surname");}
-    public String getFraktionDocument() {return speakerDoc.getString("fraction");}
-    public List<String> getRedeIdsDocument() {return speakerDoc.getList("speechIds", String.class);}
+    public List<String> getSpeechIdsDocument() {return speakerDoc.getList("speeches", String.class);}
+
     public int getRedenSizeDocument() {
         try {
             return speakerDoc.getInteger("speeches");
@@ -55,36 +60,14 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
     }
     public String getBildUrlDocument() {return speakerDoc.getString("bildUrl");}
 
-    /**
-     * This method retrieves a list of RedeIDs sorted by date
-     * @return a sorted by date RedeIDs
-     */
-
-    public List<Map.Entry<String, LocalDate>> getSpeechIds() {
-        List<String> speechIds;
-        if (collection == null) {
-            speechIds = getRedeIdsDocument();
-        } else {
-            speechIds = collection.find(filter).first().getList("speeches", String.class);
-        }
-        Map<String, LocalDate> sortedRedeIdsMap = new HashMap<>();
-        for (String speechId : speechIds) {
-            String agendaId = database.getCollection("speeches").find(new Document("id", speechId)).first().getString("agenda");
-            String sessionDate = database.getCollection("agendas").find(new Document("id", agendaId)).first().get("session", Document.class).getString("date");
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            LocalDate sitzungsdatumDate = LocalDate.parse(sessionDate, dtf);
-            sortedRedeIdsMap.put(speechId, sitzungsdatumDate);
-        }
-
-        return sortedRedeIdsMap.entrySet().stream().sorted(Map.Entry.comparingByValue()).toList();
+    public int getSpeechAmount() {
+        return getSpeechIdsDocument().size();
     }
 
-    public String getBildUrl() {
-        return collection.find(filter).first().getString("bildUrl");
-    }
-
-    public int getRedeIdsSize() {
-        return getSpeechIds().size();
+    public String getNameAndSurname() {
+        String name = getName();
+        String surname = getSurname();
+        return name + " " + surname;
     }
 
     @Override
@@ -94,27 +77,42 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
 
     @Override
     public String getId() {
-        return "";
+        return id;
     }
 
     @Override
     public String getName() {
-        return "";
+        if (speakerDoc != null) {
+            return speakerDoc.getString("name");
+        }
+        return collection.find(filter).first().getString("name");
     }
 
     @Override
     public String getSurname() {
-        return "";
+        if (speakerDoc != null) {
+            return speakerDoc.getString("surname");
+        }
+        return collection.find(filter).first().getString("surname");
     }
 
     @Override
     public int getAge() {
-        return 0;
+        Integer age;
+        if (speakerDoc != null) {
+            age = speakerDoc.getInteger("age");
+            return age != null ? age : 0;
+        }
+        age = collection.find(filter).first().getInteger("age");
+        return age != null ? age : 0;
     }
 
     @Override
     public String getAcademicTitle() {
-        return "";
+        if (speakerDoc != null) {
+            return speakerDoc.getString("academicTitle");
+        }
+        return collection.find(filter).first().getString("academicTitle");
     }
 
     @Override
@@ -122,21 +120,46 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
         return null;
     }
 
+    @JsonIgnore
+    public String getBirthDateString() {
+        Date date = speakerDoc.getDate("birthDate");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return localDateTime.format(formatter);
+    }
+
     @Override
     public String getGender() {
-        return "";
+        if (speakerDoc != null) {
+            return speakerDoc.getString("gender");
+        }
+        return collection.find(filter).first().getString("gender");
     }
 
     @Override
     public String getProfession() {
-        return "";
+        if (speakerDoc != null) {
+            return speakerDoc.getString("profession");
+        }
+        return collection.find(filter).first().getString("profession");
     }
 
     @Override
     public FractionInt getFraction() {
-        return null;
+        MongoCollection<Document> fractionCollection = database.getCollection("fractions");
+        Document fractionFilter = new Document("shortName", speakerDoc.getString("fraction"));
+        Document fractionDoc = fractionCollection.find(fractionFilter).first();
+        if (fractionDoc == null) {
+            fractionDoc = new Document("shortName", "UNKNOWN");
+        }
+        return new Fraction_MongoDB_Impl(database, fractionDoc);
     }
 
+    /**
+     * Creates a document of a speaker-object.
+     * @return document mapped with speaker-attributes.
+     * @author Amal
+     */
     @Override
     public Document toDocument() {
         String birthDate;
@@ -173,6 +196,52 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
                 .append("fraction", fraction.getShortName());
     }
 
+    /**
+     * Fetches speech-ids sorted by their dates (for the speech-id index in the portfolio)
+     * @return speech-ids sorted by dates
+     *
+     * @author Amal
+     */
+    public List<Map.Entry<String, LocalDate>> sortSpeechesByDates() {
+        List<String> speechIds = getSpeechIdsDocument();
+        if (speechIds == null || speechIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Map<String, LocalDate> speechIdDates = new HashMap<>();
+        for (String speechId : speechIds) {
+            Document speechFilter = new Document("id", speechId);
+            Document sessionIdFilter = new Document("id", database.getCollection("speeches").find(speechFilter).first().getInteger("session"));
+            Date sessionDate = database.getCollection("sessions").find(sessionIdFilter).first().getDate("date");
+            LocalDateTime sessionDateTime = sessionDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            speechIdDates.put(speechId, sessionDateTime.toLocalDate());
+        }
+
+        return speechIdDates.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Fetches speeches sorted by their dates. JsonIgnore is because of javascript-incompatibility of nested objects.
+     * @return list of speeches sorted by dates
+     *
+     * @author Amal
+     */
+    @JsonIgnore
+    public List<Speech_MongoDB_Impl> getSortedSpeeches() {
+        List<Map.Entry<String, LocalDate>> sortedSpeeches = sortSpeechesByDates();
+        List<Speech_MongoDB_Impl> speeches = new ArrayList<>();
+        for (Map.Entry<String, LocalDate> speechEntry : sortedSpeeches) {
+            String speechId = speechEntry.getKey();
+            Document speech = database.getCollection("speeches").find(new Document("id", speechId)).first();
+            Speech_MongoDB_Impl speechMongoDB = new Speech_MongoDB_Impl(database, speech);
+            speeches.add(speechMongoDB);
+        }
+        return speeches;
+    }
+
+
     @Override
     public String toHTML() {
         return "";
@@ -180,6 +249,5 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
 
     @Override
     public void addSpeech(Speech_File_Impl speech) {
-
     }
 }

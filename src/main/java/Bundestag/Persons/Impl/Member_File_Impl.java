@@ -124,6 +124,11 @@ public class Member_File_Impl implements MemberInt {
     }
 
     @Override
+    public String getNameAndSurname() {
+        return getName() + " " + getSurname();
+    }
+
+    @Override
     public Document toDocument() {
         throw new UnsupportedOperationException("File-Class does not support Document operations!");
     }
