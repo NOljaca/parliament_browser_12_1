@@ -31,4 +31,8 @@ public interface SpeakerInt extends MemberInt{
     void addSpeech(Speech_File_Impl speech);
 
     List<Speech_MongoDB_Impl> getSortedSpeeches();
+
+    String toTex();
+
+    String toTexSpeaker();
 }

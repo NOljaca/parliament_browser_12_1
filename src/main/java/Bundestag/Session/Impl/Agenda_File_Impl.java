@@ -84,6 +84,16 @@ public class Agenda_File_Impl implements AgendaInt {
         this.speeches.add(speech);
     }
 
+    @Override
+    public String toTex() {
+        return "";
+    }
+
+    @Override
+    public String toTexIndex() {
+        return "";
+    }
+
     public String getAgendaId() {
         return agendaId;
     }

@@ -1,6 +1,10 @@
 import Bundestag.Factory.Impl.BundestagFactory;
 import Database.MongoDBHandler;
+import Exporter.PDFExporter;
 import Rest.RESTHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 

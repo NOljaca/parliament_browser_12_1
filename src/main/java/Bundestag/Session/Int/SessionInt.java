@@ -46,4 +46,6 @@ public interface SessionInt {
      * @return created document with the attributes in the specific fields.
      */
     Document toDocument();
+
+    String toTex();
 }

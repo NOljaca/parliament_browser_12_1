@@ -57,7 +57,7 @@ public class Speech_MongoDB_Impl implements SpeechInt {
     public SpeakerInt getSpeaker() {
         MongoCollection<Document> speakerCollection = database.getCollection("speakers");
         Document speakerFilter = new Document("id", speechDoc.getString("speaker"));
-        Document speakerDoc = speakerCollection.find(speakerFilter).first();
+        Document speakerDoc = speakerCollection.find().filter(speakerFilter).first();
         return new Speaker_MongoDB_Impl(database, speakerDoc);
     }
 
@@ -206,5 +206,51 @@ public class Speech_MongoDB_Impl implements SpeechInt {
         return speechBuilder.toString();
     }
 
+    public String getContentWithCommentsTex() {
+        List<CommentInt> comments = getComments();
+        if(comments != null) {
+            comments.sort(Comparator.comparing(CommentInt::getIndex));
+        }
+        String content = getContent();
+        int textIndex = 0;
+        StringBuilder speechBuilder = new StringBuilder();
+        if (comments != null) {
+            for (CommentInt comment : comments) {
+                int index = comment.getIndex();
+                String commentContent = comment.getContent();
+
+                if (index < 0 || index > content.length()) {
+                    continue;
+                }
+
+                if (textIndex < index) {
+                    speechBuilder.append(content, textIndex, index);
+                    textIndex = index;
+                }
+                speechBuilder.append("\\\\\\textcolor{blue}{").append(commentContent).append("}\\\\");
+            }
+        }
+        if (textIndex < content.length()) {
+            speechBuilder.append(content.substring(textIndex));
+        }
+        return speechBuilder.toString();
+    }
+
+    public String toTex() {
+        StringBuilder latex = new StringBuilder();
+        latex.append("\\subsubsection{").append(getId()).append("}\n");
+        latex.append(getSpeaker().toTex());
+        latex.append("\\textbf{Inhalt:}\\\\");
+        latex.append(getContentWithCommentsTex());
+        return latex.toString();
+    }
+
+    public String toTexSpeaker() {
+        StringBuilder latex = new StringBuilder();
+        latex.append("\\section{").append(getId()).append("}\n");
+        latex.append("\\textbf{Inhalt:}\\\\");
+        latex.append(getContentWithCommentsTex());
+        return latex.toString();
+    }
 
 }

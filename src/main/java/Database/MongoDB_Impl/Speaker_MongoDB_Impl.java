@@ -40,6 +40,7 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
         this.id = id;
         collection = database.getCollection("speakers");
         filter = new Document("id", id);
+        speakerDoc = collection.find(filter).first();
     }
 
     public Speaker_MongoDB_Impl(MongoDatabase database, Document speakerDoc) {
@@ -123,6 +124,7 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
     @JsonIgnore
     public String getBirthDateString() {
         Date date = speakerDoc.getDate("birthDate");
+        if (date == null) {return "UNKNOWN";}
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         return localDateTime.format(formatter);
@@ -249,5 +251,30 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
 
     @Override
     public void addSpeech(Speech_File_Impl speech) {
+    }
+
+    public String toTex() {
+        StringBuilder latex = new StringBuilder();
+        latex.append("\\textbf{Redner:}").append(getNameAndSurname()).append("\\\\\\\\");
+        latex.append("\\textbf{Alter:}").append(getAge()).append("\\\\\\\\");
+        latex.append("\\textbf{Geburtsdatum:}").append(getBirthDateString()).append("\\\\\\\\");
+        latex.append("\\textbf{Beruf:}").append(getProfession()).append("\\\\\\\\");
+        latex.append("\\textbf{Fraktion:}").append(getFraction().getShortName()).append("\\\\\\\\");
+        return latex.toString();
+    }
+
+    public String toTexSpeaker() {
+        StringBuilder latex = new StringBuilder();
+        latex.append("\\textbf{Redner:} ").append(getNameAndSurname()).append("\\\\\\\\");
+        latex.append("\\textbf{Alter:} ").append(getAge()).append("\\\\\\\\");
+        latex.append("\\textbf{Geburtsdatum:} ").append(getBirthDateString()).append("\\\\\\\\");
+        latex.append("\\textbf{Beruf:} ").append(getProfession()).append("\\\\\\\\");
+        latex.append("\\textbf{Fraktion:} ").append(getFraction().getShortName()).append("\\\\\\\\");
+
+        for (Speech_MongoDB_Impl speech : getSortedSpeeches()) {
+            latex.append(speech.toTex());
+        }
+
+        return latex.toString();
     }
 }

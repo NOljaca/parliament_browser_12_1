@@ -62,10 +62,9 @@ public class Session_MongoDB_Impl implements SessionInt {
         MongoCollection<Document> agendaCollection = mongoDatabase.getCollection("agendas");
         for (String agendaName : sessionDoc.getList("agendas", String.class)) {
             String agendaId = getId() + "-" + agendaName;
-            System.out.println(agendaId);
             Document agendaFilter = new Document("agendaId", agendaId);
             Document agendaDoc  = agendaCollection.find(agendaFilter).first();
-            AgendaInt agenda = new Agenda_MongoDB_Impl(agendaDoc);
+            AgendaInt agenda = new Agenda_MongoDB_Impl(agendaDoc, mongoDatabase);
             agendas.add(agenda);
         }
         return agendas;
@@ -100,5 +99,24 @@ public class Session_MongoDB_Impl implements SessionInt {
                 .append("date", session.getDate())
                 .append("agendas", agendaIds);
         return sessionDocument;
+    }
+
+    public String toTex() {
+        StringBuilder latex = new StringBuilder();
+        latex.append("\\section*{").append(getTitle()).append("}\n");
+        latex.append("\\begin{itemize}\n");
+        for (AgendaInt agenda : getAgenda()) {
+            latex.append("  \\item ")
+                    .append(agenda.toTexIndex())
+                    .append("\n");
+
+        }
+        latex.append("\\end{itemize}\n");
+        latex.append("\\newpage\n");
+        for (AgendaInt agenda : getAgenda()) {
+            latex.append(agenda.toTex());
+        }
+        latex.append("\\newpage\n");
+        return latex.toString();
     }
 }

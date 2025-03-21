@@ -55,4 +55,6 @@ public interface SpeechInt {
     String getSpeakerId();
 
     JCas toCas();
+
+    String toTex();
 }

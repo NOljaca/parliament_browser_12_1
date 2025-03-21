@@ -77,4 +77,14 @@ public class Speaker_File_Impl extends Member_File_Impl implements SpeakerInt {
     public List<Speech_MongoDB_Impl> getSortedSpeeches() {
         return List.of();
     }
+
+    @Override
+    public String toTex() {
+        return "";
+    }
+
+    @Override
+    public String toTexSpeaker() {
+        return "";
+    }
 }

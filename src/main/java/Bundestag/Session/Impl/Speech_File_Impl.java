@@ -117,6 +117,11 @@ public class Speech_File_Impl implements SpeechInt {
         return null;
     }
 
+    @Override
+    public String toTex() {
+        return "";
+    }
+
     public void setAgenda(AgendaInt agenda) {
         this.agenda = agenda;
     }

@@ -3,6 +3,8 @@ package Database.MongoDB_Impl;
 import Bundestag.Session.Int.AgendaInt;
 import Bundestag.Session.Int.SessionInt;
 import Bundestag.Session.Int.SpeechInt;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -16,12 +18,17 @@ public class Agenda_MongoDB_Impl implements AgendaInt {
 
     private AgendaInt agenda;
     private Document agendaDoc;
+    private MongoDatabase mongoDatabase;
 
     public Agenda_MongoDB_Impl(AgendaInt agenda) {
         this.agenda = agenda;
     }
     public Agenda_MongoDB_Impl(Document agendaDoc) {
         this.agendaDoc = agendaDoc;
+    }
+    public Agenda_MongoDB_Impl(Document agendaDoc, MongoDatabase mongoDatabase) {
+        this.agendaDoc = agendaDoc;
+        this.mongoDatabase = mongoDatabase;
     }
 
     @Override
@@ -46,7 +53,17 @@ public class Agenda_MongoDB_Impl implements AgendaInt {
 
     @Override
     public List<SpeechInt> getSpeeches() {
-        return List.of();
+        Document filter = new Document("agendaId", getAgendaId());
+        List<String> speechIds = mongoDatabase.getCollection("agendas").find().filter(filter).first().getList("speeches", String.class);
+        MongoCollection<Document> speechCollection = mongoDatabase.getCollection("speeches");
+        List<SpeechInt> speeches = new ArrayList<>();
+        for (String speechId : speechIds) {
+            Document speechFilter = new Document("id", speechId);
+            Document speechDoc = speechCollection.find().filter(speechFilter).first();
+            SpeechInt speech = new Speech_MongoDB_Impl(mongoDatabase, speechDoc);
+            speeches.add(speech);
+        }
+        return speeches;
     }
 
     /**
@@ -73,5 +90,26 @@ public class Agenda_MongoDB_Impl implements AgendaInt {
 
     @Override
     public void addSpeech(SpeechInt speech) {
+    }
+
+    public String toTexIndex() {
+        StringBuilder latex = new StringBuilder();
+        latex.append(getId())
+                .append(" - ")
+                .append(getTitle())
+                .append(" \\dotfill \\pageref{")
+                .append(getAgendaId())
+                .append("}\n");
+        return latex.toString();
+    }
+
+    public String toTex() {
+        StringBuilder latex = new StringBuilder();
+        latex.append("\\subsection{").append(getId()).append("}\n");
+        latex.append("\\label{").append(getAgendaId()).append("}\n");
+        for (SpeechInt speech : getSpeeches()) {
+            latex.append(speech.toTex());
+        }
+        return latex.toString();
     }
 }
