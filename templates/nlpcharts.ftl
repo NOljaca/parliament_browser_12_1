@@ -159,6 +159,16 @@
             overflow-x: auto;
             border-bottom: 1px solid gray;
         }
+        .no-speeches-found {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            color: red;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 40px;
+        }
     </style>
 </head>
 <body>
@@ -504,7 +514,6 @@
                 spinnerWrapper.innerHTML = "<div class='spinner'><i class='fa-solid fa-spinner fa-spin'></i><p>Erstelle Bar-Chart für POS-Tags...</p></div>";
                 createBarChart(posAmount);
                 spinnerWrapper.innerHTML = "";
-
             },
             error: function (xhr) {
                 console.error("Fetch of chart-data failed: " + xhr.responseText);
@@ -530,6 +539,10 @@
             success: function (response) {
                 const posAmount = Object.entries(response.posAmounts).map(([pos, count]) => ({pos, count}));
                 const topics = Object.entries(response.topics).map(([topic, value]) => ({ topic, value }));
+                if (posAmount.length === 0 && topics.length === 0) {
+                    spinnerWrapper.innerHTML = "<div class='no-speeches-found'><i class='fa-solid fa-triangle-exclamation fa-bounce fa-xl'></i><p>Keine Reden zu ausgewähltem Filter gefunden!</p></div>";
+                    return;
+                }
 
                 spinnerWrapper.innerHTML = "";
                 bubbleChartWrapper.style.display = "flex";

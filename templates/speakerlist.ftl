@@ -58,8 +58,28 @@
             padding: 10px;
         }
 
-        #searchBar {
-            width: 40%;
+        .search-field-wrapper {
+            display: flex;
+            width: 100%;
+            height: 20%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .input-wrapper {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 25%;
+            border: none;
+            border-bottom: 1px solid lightgray;
+            outline: none;
         }
     </style>
 </head>
@@ -69,7 +89,11 @@
         <h1 class="header">Rednerliste der 20. Wahlperiode</h1>
     </div>
     <div class="table-wrapper">
-        <input type="text" id="searchBar" onkeyup="searchSpeaker()" placeholder="Suche nach einem Redner/einer Rednerin...">
+        <div class="search-field-wrapper">
+            <div class="input-wrapper">
+                <input type="text" id="searchBar" onkeyup="searchSpeaker()" placeholder="Suche nach einem Redner/einer Rednerin...">
+            </div>
+        </div>
         <table id="speakerTable">
             <caption style="padding-bottom: 10px">Alle Redner im Bundestag</caption>
             <tbody>
