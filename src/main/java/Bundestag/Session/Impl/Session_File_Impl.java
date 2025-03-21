@@ -88,4 +88,6 @@ public class Session_File_Impl implements SessionInt {
     public Document toDocument() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public String toTex(){return "";}
 }

@@ -46,4 +46,8 @@ public interface AgendaInt {
      * @param speech instance of {@link SpeechInt} which should be added to the list.
      */
     void addSpeech(SpeechInt speech);
+
+    String toTex();
+
+    String toTexIndex();
 }
