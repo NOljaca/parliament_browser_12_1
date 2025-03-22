@@ -150,7 +150,7 @@
             overflow-y: auto;
             max-height: 700px;
         }
-        .bar-chart-wrapper, .bubble-chart-wrapper {
+        .bar-chart-wrapper, .bubble-chart-wrapper, .sunburst-chart-wrapper, .radar-chart-wrapper {
             display: none;
             justify-content: flex-start;
             align-items: center;
@@ -229,6 +229,14 @@
                 <div id="bar-chart-wrapper" class="bar-chart-wrapper">
                     <h4>POS-Verteilung</h4>
                     <svg id="bar-chart"></svg>
+                </div>
+                <div id="radar-chart-wrapper" class="radar-chart-wrapper">
+                    <h4>Sentiments-Verteilung</h4>
+                    <svg id="radar-chart"></svg>
+                </div>
+                <div id="sunburst-chart-wrapper" class="sunburst-chart-wrapper">
+                    <h4>Named-Entities-Verteilung</h4>
+                    <svg id="sunburst-chart"></svg>
                 </div>
             </div>
         </div>
@@ -492,8 +500,12 @@
         const spinnerWrapper = document.getElementById("spinner-wrapper");
         const barChartWrapper = document.getElementById("bar-chart-wrapper");
         const bubbleChartWrapper = document.getElementById("bubble-chart-wrapper");
+        const radarChartWrapper = document.getElementById("radar-chart-wrapper");
+        const sunburstWrapper = document.getElementById("sunburst-chart-wrapper");
         bubbleChartWrapper.style.display = "none";
         barChartWrapper.style.display = "none";
+        radarChartWrapper.style.display = "none";
+        sunburstWrapper.style.display = "none";
         spinnerWrapper.innerHTML = "<div class='spinner'><i class='fa-solid fa-spinner fa-spin'></i><p>Lade NLP-Daten für alle Reden...</p></div>";
         $.ajax({
             url: "/nlpcharts/chartdata/fetchchartdataforallspeeches",
@@ -502,18 +514,28 @@
             success: function (response) {
                 const posAmount = Object.entries(response.posAmounts).map(([pos, count]) => ({pos, count}));
                 const topics = Object.entries(response.topics).map(([topic, value]) => ({ topic, value }));
-
+                const categoryCounts = d3.rollup(response.namedEntities, v => v.length, d => d.category);
+                const hierarchyData = {
+                    name: "root",
+                    children: Array.from(categoryCounts, ([key, value]) => ({ name: key, value: value }))
+                };
+                spinnerWrapper.innerHTML = "";
                 bubbleChartWrapper.style.display = "flex";
                 bubbleChartWrapper.style.flexDirection = "column";
                 bubbleChartWrapper.style.width = 710;
                 barChartWrapper.style.display = "flex";
                 barChartWrapper.style.flexDirection = "column";
                 barChartWrapper.style.width = 710;
-                spinnerWrapper.innerHTML = "<div class='spinner'><i class='fa-solid fa-spinner fa-spin'></i><p>Erstelle Bubble-Chart für Topics...</p></div>";
-                createBubbleChart(topics)
-                spinnerWrapper.innerHTML = "<div class='spinner'><i class='fa-solid fa-spinner fa-spin'></i><p>Erstelle Bar-Chart für POS-Tags...</p></div>";
+                radarChartWrapper.style.display = "flex";
+                radarChartWrapper.style.flexDirection = "column";
+                radarChartWrapper.style.width = 710;
+                sunburstWrapper.style.display = "flex";
+                sunburstWrapper.style.flexDirection = "column";
+                sunburstWrapper.style.width = 710;
+                createBubbleChart(topics);
                 createBarChart(posAmount);
-                spinnerWrapper.innerHTML = "";
+                createRadarChart(response.sentenceSentiments);
+                createSunburstChart(hierarchyData);
             },
             error: function (xhr) {
                 console.error("Fetch of chart-data failed: " + xhr.responseText);
@@ -528,9 +550,13 @@
         }
         const spinnerWrapper = document.getElementById("spinner-wrapper");
         const barChartWrapper = document.getElementById("bar-chart-wrapper");
-        const bubbleChartWrapper = document.getElementById("bubble-chart-wrapper")
+        const bubbleChartWrapper = document.getElementById("bubble-chart-wrapper");
+        const radarChartWrapper = document.getElementById("radar-chart-wrapper");
+        const sunburstChartWrapper = document.getElementById("sunburst-chart-wrapper")
         bubbleChartWrapper.style.display = "none";
         barChartWrapper.style.display = "none";
+        radarChartWrapper.style.display = "none";
+        sunburstChartWrapper.style.display = "none";
         spinnerWrapper.innerHTML = "<div class='spinner'><i class='fa-solid fa-spinner fa-spin'></i><p>Lade NLP-Daten...</p></div>";
         $.ajax({
             url: "/nlpcharts/chartdata?speechids=" + selectedSpeeches + "&fractions=" + selectedFractions + "&speakers=" + selectedSpeakers + "&dates=" + selectedDates,
@@ -543,6 +569,11 @@
                     spinnerWrapper.innerHTML = "<div class='no-speeches-found'><i class='fa-solid fa-triangle-exclamation fa-bounce fa-xl'></i><p>Keine Reden zu ausgewähltem Filter gefunden!</p></div>";
                     return;
                 }
+                const categoryCounts = d3.rollup(response.namedEntities, v => v.length, d => d.category);
+                const hierarchyData = {
+                    name: "root",
+                    children: Array.from(categoryCounts, ([key, value]) => ({ name: key, value: value }))
+                };
 
                 spinnerWrapper.innerHTML = "";
                 bubbleChartWrapper.style.display = "flex";
@@ -551,8 +582,16 @@
                 barChartWrapper.style.display = "flex";
                 barChartWrapper.style.flexDirection = "column";
                 barChartWrapper.style.width = 710;
+                radarChartWrapper.style.display = "flex";
+                radarChartWrapper.style.flexDirection = "column";
+                radarChartWrapper.style.width = 710;
+                sunburstChartWrapper.style.display = "flex";
+                sunburstChartWrapper.style.flexDirection = "column";
+                sunburstChartWrapper.style.width = 710;
                 createBubbleChart(topics)
                 createBarChart(posAmount);
+                createRadarChart(response.sentenceSentiments)
+                createSunburstChart(hierarchyData);
             },
             error: function (xhr) {
                 console.error("Fetch of chart-data failed: " + xhr.responseText);

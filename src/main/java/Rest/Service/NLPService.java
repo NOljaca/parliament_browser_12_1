@@ -85,7 +85,7 @@ public class NLPService {
      * Method for fetching the chart-data (nlp-analysis) for speeches which correspond to the selected filters.
      * @param ctx
      *
-     * @author Amal
+     * @author Amal, Muhammed
      */
     public void fetchChartData(Context ctx){
         Map<String, Object> response = new HashMap<>();
@@ -99,19 +99,27 @@ public class NLPService {
         List<String> datesList = new ArrayList<>();
         Map<String, Integer> posAmounts;
         Map<String, Double> topics;
+        Map<String, Object> sentenceSentimentValues;
+        List<Map<String, Object>> namedEntites;
         if (speechIds != null && !speechIds.isEmpty()) {
             speechIdsList = Arrays.asList(speechIds.split(","));
             posAmounts = mongoDBHandler.getPOSAmountsForSpeeches(speechIdsList);
             topics = mongoDBHandler.getTopicsForSpeeches(speechIdsList);
+            sentenceSentimentValues = mongoDBHandler.getSentenceSentimentValuesForSpeeches(speechIdsList);
+            namedEntites = mongoDBHandler.getNamedEntitesForSpeeches(speechIdsList);
         } else {
             if (fractions != null) {fractionsList = Arrays.asList(fractions.split(","));}
             if (speakers != null) {speakersList = Arrays.asList(speakers.split(","));}
             if (dates != null) {datesList = Arrays.asList(dates.split(","));}
             posAmounts = mongoDBHandler.getPosAmounts(fractionsList, speakersList, datesList);
             topics = mongoDBHandler.getTopics(fractionsList, speakersList, datesList);
+            sentenceSentimentValues = mongoDBHandler.getSentenceSentimentValues(fractionsList, speakersList, datesList);
+            namedEntites = mongoDBHandler.getNamedEntitesForFilters(fractionsList, speakersList, datesList);
         }
         response.put("posAmounts", posAmounts);
         response.put("topics", topics);
+        response.put("sentenceSentiments", sentenceSentimentValues);
+        response.put("namedEntities", namedEntites);
         ctx.status(200).json(response);
     }
 
@@ -119,14 +127,18 @@ public class NLPService {
      * Method for fetching the chart-data (nlp-analysis) for all speeches.
      * @param ctx
      *
-     * @author Amal
+     * @author Amal, Muhammed
      */
     public void fetchChartDataForAllSpeeches(Context ctx){
         Map<String, Object> response = new HashMap<>();
         Map<String, Integer> posAmounts = mongoDBHandler.getAggregatedPOSAmounts();
         Map<String, Double> topics = mongoDBHandler.getAggregatedTopics();
+        Map<String, Object> sentenceSentimentValues = mongoDBHandler.getAllSentenceSentimentValuesAggregated();
+        List<Map<String, Object>> namedEntities = mongoDBHandler.getAllNamedEntitiesAggregated();
         response.put("posAmounts", posAmounts);
         response.put("topics", topics);
+        response.put("sentenceSentimentValues", sentenceSentimentValues);
+        response.put("namedEntities", namedEntities);
         ctx.status(200).json(response);
     }
 }
