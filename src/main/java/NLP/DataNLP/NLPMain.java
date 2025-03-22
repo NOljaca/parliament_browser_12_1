@@ -41,7 +41,7 @@ public class NLPMain {
      *
      *
      */
-    public static void main(String[] args) {
+    public static void startProcess() {
         while (true) {
             try {
                 runNLPProcess();

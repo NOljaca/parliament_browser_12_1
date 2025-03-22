@@ -1,5 +1,6 @@
 package NLP;
 
+import NLP.DataNLP.NLPMain;
 import NLP.Restructure.Restructure;
 import NLP.Xmi.XmiProcessor;
 import NLP.Xmi.XmiProcessor2;
@@ -19,9 +20,8 @@ public class NLPStructureBuilder {
      * Der Einstiegspunkt für die NLP-Verarbeitungspipeline.
      * Die einzelnen Verarbeitungsschritte können über die entsprechenden Flags gesteuert werden.
      *
-     * @param args Konsolenargumente (werden nicht benötigt)
      */
-    public static void main(String[] args) {
+    public static void runNLPAnalysis() {
         // Flags zur Steuerung der Verarbeitungsschritte
         boolean runXmiProcessor = false;  // Setze auf `false`, um XmiProcessor zu deaktivieren
         boolean runXmiProcessor2 = false; // Setze auf `false`, um XmiProcessor2 zu deaktivieren
@@ -31,24 +31,24 @@ public class NLPStructureBuilder {
         try {
             if (runXmiProcessor) {
                 System.out.println("Starte XmiProcessor...");
-                XmiProcessor.main(new String[]{}); // Führt die Verarbeitung der XMI-Dateien aus
+                XmiProcessor.startProcess(); // Führt die Verarbeitung der XMI-Dateien aus
                 System.out.println("XmiProcessor abgeschlossen.");
             }
             if (runXmiProcessor2) {
                 System.out.println("Starte XmiProcessor2...");
-                XmiProcessor2.main(new String[]{}); // Führt die Verarbeitung der XMI-Dateien aus
+                XmiProcessor2.startProcess(); // Führt die Verarbeitung der XMI-Dateien aus
                 System.out.println("XmiProcessor abgeschlossen.");
             }
 
             if (runNLPMain) {
                 System.out.println("Starte NLPMain...");
-                NLP.DataNLP.NLPMain.main(new String[]{}); // Führt die NLP-Analyse durch
+                NLPMain.startProcess(); // Führt die NLP-Analyse durch
                 System.out.println("NLPMain abgeschlossen.");
             }
 
             if (runRestructure) {
                 System.out.println("Starte Restructure...");
-                Restructure.main(new String[]{}); // Restrukturiert die NLP-Daten
+                Restructure.startRestructure(); // Restrukturiert die NLP-Daten
                 System.out.println("Restructure abgeschlossen.");
             }
 
