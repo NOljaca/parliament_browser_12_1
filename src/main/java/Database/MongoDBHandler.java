@@ -15,6 +15,9 @@ import Rest.JSON.SpeechJSON;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -551,6 +554,49 @@ public class MongoDBHandler {
     }
 
     /**
+     * This method fetches the named-entity-category counts for given speeches
+     * @param speechIdsList
+     * @return
+     * @author Muhammed
+     */
+    public List<Map<String, Object>> getNamedEntitesForSpeeches(List<String> speechIdsList) {
+        List<Map<String, Object>> namedEntites = new ArrayList<>();
+        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches2");
+        for (String speechId : speechIdsList) {
+            Document filter = new Document("id", speechId);
+            Document speechDoc = collection.find(filter).first();
+            Document namedEntitiesDoc = speechDoc.get("analysis", Document.class).get("namedEntities", Document.class);
+            for (String namedEntity : namedEntitiesDoc.keySet()) {
+                for (String namedEntityWord : namedEntitiesDoc.getList(namedEntity, String.class)) {
+                    Map<String, Object> namedEntityMap = new HashMap<>();
+                    namedEntityMap.put("namedEntity", namedEntityWord);
+                    namedEntityMap.put("category", namedEntity);
+                    namedEntites.add(namedEntityMap);
+                }
+            }
+        }
+        return namedEntites;
+    }
+
+    /**
+     *      * This method fetches the named-entity-category counts for given filters
+     * @param fractionNames
+     * @param speakerIds
+     * @param dates
+     * @return
+     * @author Muhammed
+     */
+    public List<Map<String, Object>> getNamedEntitesForFilters(List<String> fractionNames, List<String> speakerIds, List<String> dates) {
+        List<Integer> sessionIdsMatchingDates = new ArrayList<>();
+        List<String> speakerIdsMatchingFractions = new ArrayList<>();
+        List<String> speechIds = new ArrayList<>();
+        findMatchingSessionIdsForDates(sessionIdsMatchingDates, dates);
+        findMatchingSpeakerIdsForFractions(speakerIdsMatchingFractions, fractionNames, speakerIds);
+        findMatchingSpeechIdsForAllFilters(speechIds, speakerIdsMatchingFractions, sessionIdsMatchingDates);
+        return getNamedEntitesForSpeeches(speechIds);
+    }
+
+    /**
      * This method fetches the POS-tag-amounts for given speeches (selected by user) - for the charts.
      * @param speechIds speech-ids
      * @return map with pos-tags and their respective amounts in the speeches
@@ -851,6 +897,139 @@ public class MongoDBHandler {
             String pictureUrl = pictureExtractor.getPictureUrl(speaker.getId());
             speakerCollection.updateOne(filter, new Document("$set", new Document("pictureUrl", pictureUrl)));
         }
+    }
+
+    /**
+     * This method fetches the sentences with their respective sentiment-analysis of given speech.
+     * @param id speech-id
+     * @return sentences with sentiment-analysis
+     *
+     * @author Muhammed
+     */
+    public double getSentenceSentimentValueForSpeech(String id) {
+        List<Map<String, Object>> sentences = new ArrayList<>();
+        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches2");
+        Document filter = new Document("id", id);
+        Document speechDoc = collection.find(filter).first();
+        if (speechDoc == null) {return 0;}
+        Document analysisDoc = speechDoc.get("analysis", Document.class);
+        if (analysisDoc == null) {return 0;}
+        Document sentenceDoc = analysisDoc.get("sentences", Document.class);
+        if (sentenceDoc == null) {return 0;}
+        for (String sentence : sentenceDoc.keySet()) {
+            Map<String, Object> sentenceMap = new HashMap<>();
+            sentenceMap.put("sentiment", sentenceDoc.getDouble(sentence));
+            sentences.add(sentenceMap);
+        }
+        double speechSentiment = 0;
+        for (Map<String, Object> map : sentences) {
+            speechSentiment = (double) map.get("sentiment") + speechSentiment;
+        }
+        return speechSentiment / sentences.size();
+    }
+
+    /**
+     * This method fetches the sentiment-values for given speeches.
+     * @param speechIds
+     * @return
+     * @author Muhammed
+     */
+    public Map<String, Object> getSentenceSentimentValuesForSpeeches(List<String> speechIds) {
+        Map<String, Object> speechSentimentValue = new HashMap<>();
+        for (String speechId : speechIds) {
+            double sentimentValue = getSentenceSentimentValueForSpeech(speechId);
+            speechSentimentValue.put(speechId, sentimentValue);
+        }
+        return speechSentimentValue;
+    }
+
+    /**
+     * This method fetches the sentiment-values for speeches corresponding to the filters.
+     * @param fractionNames
+     * @param speakerIds
+     * @param dates
+     * @return sentiment-values
+     * @author Muhammed
+     */
+
+    public Map<String, Object> getSentenceSentimentValues(List<String> fractionNames, List<String> speakerIds, List<String> dates) {
+        List<Integer> sessionIdsMatchingDates = new ArrayList<>();
+        List<String> speakerIdsMatchingFractions = new ArrayList<>();
+        List<String> speechIds = new ArrayList<>();
+        findMatchingSessionIdsForDates(sessionIdsMatchingDates, dates);
+        findMatchingSpeakerIdsForFractions(speakerIdsMatchingFractions, fractionNames, speakerIds);
+        findMatchingSpeechIdsForAllFilters(speechIds, speakerIdsMatchingFractions, sessionIdsMatchingDates);
+        return getSentenceSentimentValuesForSpeeches(speechIds);
+    }
+
+    /**
+     * This method fetches the sentiment-values for every speech.
+     * Complex aggregation needed to be implemented because of the size of speeches in the database.
+     * @return map with sentiments with their values
+     * @author Muhammed
+     */
+    public Map<String, Object> getAllSentenceSentimentValuesAggregated() {
+        Bson matchStage = Aggregates.match(Filters.exists("analysis.sentences", true));
+
+        Bson projectToArrayStage = Aggregates.project(Projections.fields(
+                Projections.include("id"),
+                Projections.computed("sentencesArr", new Document("$objectToArray", "$analysis.sentences"))
+        ));
+
+        Bson projectAvgStage = Aggregates.project(Projections.fields(
+                Projections.include("id"),
+                Projections.computed("avgSentiment", new Document("$avg", "$sentencesArr.v"))
+        ));
+
+        List<Bson> pipeline = Arrays.asList(matchStage, projectToArrayStage, projectAvgStage);
+
+        AggregateIterable<Document> result = getCollection("speeches2").aggregate(pipeline);
+
+        Map<String, Object> speechSentimentMap = new HashMap<>();
+        for (Document doc : result) {
+            String speechId = doc.getString("id");
+            Double avgSentiment = doc.getDouble("avgSentiment");
+            speechSentimentMap.put(speechId, avgSentiment);
+        }
+
+        return speechSentimentMap;
+    }
+
+    /**
+     * This method fetches the named-entity-category counts for every speech.
+     * Complex aggregation needed to be implemented because of the size of speeches in the database.
+     * @return map with named-entity-category counts
+     * @author Muhammed
+     */
+    public List<Map<String, Object>> getAllNamedEntitiesAggregated() {
+        MongoCollection<Document> collection = getCollection("speeches2");
+
+        List<Bson> pipeline = Arrays.asList(
+                // Only include documents where the namedEntities field exists.
+                Aggregates.match(Filters.exists("analysis.namedEntities", true)),
+                // Project a new field "namedEntitiesArray" which is the result of converting the namedEntities object to an array.
+                Aggregates.project(Projections.fields(
+                        Projections.include("id"),
+                        Projections.computed("namedEntitiesArray", new Document("$objectToArray", "$analysis.namedEntities"))
+                )),
+                // Unwind the array so that each document represents one category with an array of named entity values.
+                Aggregates.unwind("$namedEntitiesArray"),
+                // Unwind the values array so that each document represents a single occurrence.
+                Aggregates.unwind("$namedEntitiesArray.v"),
+                // Group by the category (the key of each pair) and count the occurrences.
+                Aggregates.group("$namedEntitiesArray.k", sum("totalCount", 1))
+        );
+
+        AggregateIterable<Document> result = collection.aggregate(pipeline);
+
+        List<Map<String, Object>> aggregatedNamedEntities = new ArrayList<>();
+        for (Document doc : result) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("category", doc.getString("_id"));
+            map.put("count", doc.getInteger("totalCount"));
+            aggregatedNamedEntities.add(map);
+        }
+        return aggregatedNamedEntities;
     }
 
 }
