@@ -13,6 +13,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+
+/**
+ * The XMLScraper class provides functionality to scrape, download, and process
+ * XML protocols and related data from the German Bundestag website.
+ *
+ * This class handles scheduled scraping of plenary session protocols in XML format,
+ * downloading of DTD files for parsing these protocols, and handling speaker
+ *
+ * @author Adeola Aduroja
+ */
 public class XMLScraper {
 
     public XMLScraper() {}
