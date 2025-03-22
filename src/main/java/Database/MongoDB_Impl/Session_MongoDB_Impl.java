@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -101,7 +102,7 @@ public class Session_MongoDB_Impl implements SessionInt {
         return sessionDocument;
     }
 
-    public String toTex() {
+    public String toTex() throws IOException {
         StringBuilder latex = new StringBuilder();
         latex.append("\\section*{").append(getTitle()).append("}\n");
         latex.append("\\begin{itemize}\n");

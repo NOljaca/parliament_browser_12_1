@@ -2,6 +2,7 @@ package Bundestag.Session.Int;
 
 import org.bson.Document;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -47,7 +48,7 @@ public interface AgendaInt {
      */
     void addSpeech(SpeechInt speech);
 
-    String toTex();
+    String toTex() throws IOException;
 
     String toTexIndex();
 }

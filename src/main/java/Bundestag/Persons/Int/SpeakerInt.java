@@ -5,6 +5,7 @@ import Bundestag.Session.Int.SpeechInt;
 import Database.MongoDB_Impl.Speech_MongoDB_Impl;
 import org.bson.Document;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -28,11 +29,13 @@ public interface SpeakerInt extends MemberInt{
 
     int getSpeechAmount();
 
+    String getPictureUrl();
+
     void addSpeech(Speech_File_Impl speech);
 
     List<Speech_MongoDB_Impl> getSortedSpeeches();
 
-    String toTex();
+    String toTex() throws IOException;
 
-    String toTexSpeaker();
+    String toTexSpeaker() throws IOException;
 }

@@ -7,6 +7,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +104,7 @@ public class Agenda_MongoDB_Impl implements AgendaInt {
         return latex.toString();
     }
 
-    public String toTex() {
+    public String toTex() throws IOException {
         StringBuilder latex = new StringBuilder();
         latex.append("\\subsection{").append(getId()).append("}\n");
         latex.append("\\label{").append(getAgendaId()).append("}\n");

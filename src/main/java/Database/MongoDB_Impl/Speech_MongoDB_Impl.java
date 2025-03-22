@@ -10,6 +10,7 @@ import com.mongodb.client.MongoDatabase;
 import org.apache.uima.jcas.JCas;
 import org.bson.Document;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -236,7 +237,7 @@ public class Speech_MongoDB_Impl implements SpeechInt {
         return speechBuilder.toString();
     }
 
-    public String toTex() {
+    public String toTex() throws IOException {
         StringBuilder latex = new StringBuilder();
         latex.append("\\subsubsection{").append(getId()).append("}\n");
         latex.append(getSpeaker().toTex());

@@ -95,7 +95,7 @@
 </button>
 <div class="image-wrapper">
     <div class="image-container">
-        <img src="" alt="" style="width: 200px; height: 200px;">
+        <img src=${speaker.pictureUrl} alt="" style="width: 200px; height: 200px;">
     </div>
 </div>
 <div class="speech-index">

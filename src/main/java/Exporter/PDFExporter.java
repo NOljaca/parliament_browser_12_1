@@ -27,7 +27,7 @@ public class PDFExporter {
         }
     }
 
-    public void exportSpeakerPdf(String speakerId) {
+    public void exportSpeakerPdf(String speakerId) throws IOException {
         SpeakerInt speaker = new Speaker_MongoDB_Impl(mongoDBHandler.getDatabase(), speakerId);
         StringBuilder latex = new StringBuilder();
         latex.append(latexBegin());
@@ -53,7 +53,7 @@ public class PDFExporter {
         }
     }
 
-    public void exportSessionsToPDF(List<String> sessionIds) {
+    public void exportSessionsToPDF(List<String> sessionIds) throws IOException {
         List<SessionInt> sessions = getSessions(sessionIds);
         StringBuilder latex = new StringBuilder();
         latex.append(latexBegin());
@@ -96,6 +96,7 @@ public class PDFExporter {
                 .append("\\usepackage[utf8]{inputenc}\n")
                 .append("\\usepackage[T1]{fontenc}\n")
                 .append("\\usepackage{xcolor}\n")
+                .append("\\usepackage{graphicx}\n")
                 .append("\\DeclareUnicodeCharacter{202F}{\\,}\n")
                 .append("\\DeclareUnicodeCharacter{02BC}{'}\n")
                 .append("\\begin{document}\n");

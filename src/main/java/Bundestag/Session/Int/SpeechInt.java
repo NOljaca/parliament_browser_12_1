@@ -4,6 +4,7 @@ import Bundestag.Persons.Int.SpeakerInt;
 import org.apache.uima.jcas.JCas;
 import org.bson.Document;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -56,5 +57,5 @@ public interface SpeechInt {
 
     JCas toCas();
 
-    String toTex();
+    String toTex() throws IOException;
 }

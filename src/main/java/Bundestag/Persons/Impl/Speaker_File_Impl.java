@@ -61,6 +61,11 @@ public class Speaker_File_Impl extends Member_File_Impl implements SpeakerInt {
         return getSpeech().size();
     }
 
+    @Override
+    public String getPictureUrl() {
+        return "";
+    }
+
     public void setSpeeches(List<SpeechInt> speeches) {
         this.speeches = speeches;
     }

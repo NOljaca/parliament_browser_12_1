@@ -8,6 +8,7 @@ import Bundestag.Session.Int.CommentInt;
 import Bundestag.Session.Int.SessionInt;
 import Bundestag.Session.Int.SpeechInt;
 import Database.MongoDB_Impl.*;
+import Helper.PictureExtractor;
 import PropertyHandlers.DBConnectionProperties;
 import Rest.JSON.SpeakerJSON;
 import Rest.JSON.SpeechJSON;
@@ -839,6 +840,17 @@ public class MongoDBHandler {
         result.put("speeches", speeches);
         result.put("amount", amount);
         return result;
+    }
+
+    public void putSpeakerPictures() throws IOException {
+        List<SpeakerInt> speakers = getAllSpeakers();
+        MongoCollection<Document> speakerCollection = mongoDatabase.getCollection("speakers");
+        PictureExtractor pictureExtractor = new PictureExtractor(this);
+        for (SpeakerInt speaker : speakers) {
+            Document filter = new Document("id", speaker.getId());
+            String pictureUrl = pictureExtractor.getPictureUrl(speaker.getId());
+            speakerCollection.updateOne(filter, new Document("$set", new Document("pictureUrl", pictureUrl)));
+        }
     }
 
 }

@@ -8,6 +8,8 @@ import io.javalin.openapi.OpenApi;
 import io.javalin.openapi.OpenApiParam;
 import io.javalin.openapi.OpenApiResponse;
 
+import java.io.IOException;
+
 /**
  * Controller of nlp-related api-requests. Service methods are called for each endpoint.
  * @author Amal
@@ -43,7 +45,7 @@ public class ExportController {
             tags = {"Export"},
             responses = {@OpenApiResponse(status = "200")}
     )
-    public void getSessionExports(Context ctx) {
+    public void getSessionExports(Context ctx) throws IOException {
         exportService.exportSessionPdfs(ctx);
     }
 
@@ -63,7 +65,7 @@ public class ExportController {
             tags = {"Export"},
             responses = {@OpenApiResponse(status = "200")}
     )
-    public void getSpeakerExport(Context ctx) {
+    public void getSpeakerExport(Context ctx) throws IOException {
         exportService.exportSpeakerPdf(ctx);
     }
 }

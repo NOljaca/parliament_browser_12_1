@@ -5,11 +5,13 @@ import Bundestag.Fractions.Int.FractionInt;
 import Bundestag.Persons.Int.SpeakerInt;
 import Bundestag.Session.Impl.Speech_File_Impl;
 import Bundestag.Session.Int.SpeechInt;
+import Helper.PictureExtractor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -63,6 +65,14 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
 
     public int getSpeechAmount() {
         return getSpeechIdsDocument().size();
+    }
+
+    @Override
+    public String getPictureUrl() {
+        if (speakerDoc != null) {
+            return speakerDoc.getString("pictureUrl");
+        }
+        return collection.find(filter).first().getString("pictureUrl");
     }
 
     public String getNameAndSurname() {
@@ -253,24 +263,29 @@ public class Speaker_MongoDB_Impl implements SpeakerInt {
     public void addSpeech(Speech_File_Impl speech) {
     }
 
-    public String toTex() {
+    public String toTex() throws IOException {
         StringBuilder latex = new StringBuilder();
         latex.append("\\textbf{Redner:}").append(getNameAndSurname()).append("\\\\\\\\");
         latex.append("\\textbf{Alter:}").append(getAge()).append("\\\\\\\\");
         latex.append("\\textbf{Geburtsdatum:}").append(getBirthDateString()).append("\\\\\\\\");
         latex.append("\\textbf{Beruf:}").append(getProfession()).append("\\\\\\\\");
         latex.append("\\textbf{Fraktion:}").append(getFraction().getShortName()).append("\\\\\\\\");
+        PictureExtractor.downloadPicture(getPictureUrl(), getId());
+        String picturePath = getId() + ".jpg";
+        latex.append("\\includegraphics[width=0.5\\textwidth]{").append(picturePath).append("} \\\\");
         return latex.toString();
     }
 
-    public String toTexSpeaker() {
+    public String toTexSpeaker() throws IOException {
         StringBuilder latex = new StringBuilder();
         latex.append("\\textbf{Redner:} ").append(getNameAndSurname()).append("\\\\\\\\");
         latex.append("\\textbf{Alter:} ").append(getAge()).append("\\\\\\\\");
         latex.append("\\textbf{Geburtsdatum:} ").append(getBirthDateString()).append("\\\\\\\\");
         latex.append("\\textbf{Beruf:} ").append(getProfession()).append("\\\\\\\\");
         latex.append("\\textbf{Fraktion:} ").append(getFraction().getShortName()).append("\\\\\\\\");
-
+        PictureExtractor.downloadPicture(getPictureUrl(), getId());
+        String picturePath = getId() + ".jpg";
+        latex.append("\\includegraphics[width=0.5\\textwidth]{").append(picturePath).append("} \\\\");
         for (Speech_MongoDB_Impl speech : getSortedSpeeches()) {
             latex.append(speech.toTex());
         }
