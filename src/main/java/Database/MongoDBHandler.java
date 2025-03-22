@@ -516,7 +516,7 @@ public class MongoDBHandler {
      */
     public List<Map<String, Object>> getSentences(String id) {
         List<Map<String, Object>> sentences = new ArrayList<>();
-        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches2");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches");
         Document filter = new Document("id", id);
         Document speechDoc = collection.find(filter).first();
         Document sentenceDoc = speechDoc.get("analysis", Document.class).get("sentences", Document.class);
@@ -538,7 +538,7 @@ public class MongoDBHandler {
      */
     public List<Map<String, Object>> getNamedEntities(String id) {
         List<Map<String, Object>> namedEntites = new ArrayList<>();
-        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches2");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches");
         Document filter = new Document("id", id);
         Document speechDoc = collection.find(filter).first();
         Document namedEntitiesDoc = speechDoc.get("analysis", Document.class).get("namedEntities", Document.class);
@@ -561,7 +561,7 @@ public class MongoDBHandler {
      */
     public List<Map<String, Object>> getNamedEntitesForSpeeches(List<String> speechIdsList) {
         List<Map<String, Object>> namedEntites = new ArrayList<>();
-        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches2");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches");
         for (String speechId : speechIdsList) {
             Document filter = new Document("id", speechId);
             Document speechDoc = collection.find(filter).first();
@@ -605,7 +605,7 @@ public class MongoDBHandler {
      */
     public Map<String, Integer> getPOSAmountsForSpeeches(List<String> speechIds) {
         Map<String, Integer> posAmounts = new HashMap<>();
-        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches2");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches");
         Document filter = new Document("id", new Document("$in", speechIds));
         Document projection = new Document("analysis.posTags", 1).append("_id", 0);
         FindIterable<Document> speechDocs = collection.find().filter(filter).projection(projection);
@@ -733,7 +733,7 @@ public class MongoDBHandler {
      * @author Amal
      */
     public Map<String, Double> getTopicsForSpeeches(List<String> speechIds) {
-        MongoCollection<Document> speechCollection = mongoDatabase.getCollection("speeches2");
+        MongoCollection<Document> speechCollection = mongoDatabase.getCollection("speeches");
         Map<String, Double> topicsMap = new HashMap<>();
         Document filter = new Document("id", new Document("$in", speechIds));
         Document projection = new Document("analysis.topics", 1).append("_id", 0);
@@ -795,7 +795,7 @@ public class MongoDBHandler {
      * @return map with pos-tags with their amounts
      */
     public Map<String, Integer> getAggregatedPOSAmounts() {
-        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches2");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches");
 
         List<Bson> pipeline = Arrays.asList(
                 match(exists("analysis.posTags")),
@@ -825,7 +825,7 @@ public class MongoDBHandler {
      * @return map with topics with their amounts
      */
     public Map<String, Double> getAggregatedTopics() {
-        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches2");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches");
         List<Bson> pipeline = new ArrayList<>();
 
         pipeline.add(match(exists("analysis.topics")));
@@ -908,7 +908,7 @@ public class MongoDBHandler {
      */
     public double getSentenceSentimentValueForSpeech(String id) {
         List<Map<String, Object>> sentences = new ArrayList<>();
-        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches2");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("speeches");
         Document filter = new Document("id", id);
         Document speechDoc = collection.find(filter).first();
         if (speechDoc == null) {return 0;}
@@ -983,7 +983,7 @@ public class MongoDBHandler {
 
         List<Bson> pipeline = Arrays.asList(matchStage, projectToArrayStage, projectAvgStage);
 
-        AggregateIterable<Document> result = getCollection("speeches2").aggregate(pipeline);
+        AggregateIterable<Document> result = getCollection("speeches").aggregate(pipeline);
 
         Map<String, Object> speechSentimentMap = new HashMap<>();
         for (Document doc : result) {
@@ -1002,7 +1002,7 @@ public class MongoDBHandler {
      * @author Muhammed
      */
     public List<Map<String, Object>> getAllNamedEntitiesAggregated() {
-        MongoCollection<Document> collection = getCollection("speeches2");
+        MongoCollection<Document> collection = getCollection("speeches");
 
         List<Bson> pipeline = Arrays.asList(
                 // Only include documents where the namedEntities field exists.
