@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * - Berechnet und speichert Sentiment-Werte für Sätze
  * - Strukturiert Topic-Analysen um und speichert sie in einer separaten Map
  *
- * Nach der Verarbeitung wird das restrukturierte Dokument in der MongoDB-Collection `speeches2` gespeichert.
+ * Nach der Verarbeitung wird das restrukturierte Dokument in der MongoDB-Collection `speeches` gespeichert.
  */
 public class Restructure {
     private static final boolean DEBUG = true; // Debug-Modus aktivieren/deaktivieren
@@ -53,7 +53,7 @@ public class Restructure {
                     Map<String, Double> sentenceSentimentMap = processSentences(casDoc);
                     Map<String, List<List<Object>>> topicsMap = processTopics(casDoc);
 
-                    // Erstelle neues restrukturiertes Dokument für die MongoDB-Collection `speeches2`
+                    // Erstelle neues restrukturiertes Dokument für die MongoDB-Collection `speeches`
                     Document updateDocument = new Document("id", speechId)
                             .append("analysis", new Document()
                                     .append("dependencies", dependenciesMap)
