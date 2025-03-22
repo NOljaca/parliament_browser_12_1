@@ -5,10 +5,7 @@ import Exporter.PDFExporter;
 import Rest.RESTHandler;
 import io.javalin.http.Context;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class ExportService {
     }
 
 
-    public void exportSessionPdfs(Context ctx) {
+    public void exportSessionPdfs(Context ctx) throws IOException {
         String sessionIds = ctx.queryParam("ids");
         assert sessionIds != null;
         List<String> sessionIdList = Arrays.asList(sessionIds.split(","));
@@ -55,7 +52,7 @@ public class ExportService {
         pdfExporter.deleteFiles();
     }
 
-    public void exportSpeakerPdf(Context ctx) {
+    public void exportSpeakerPdf(Context ctx) throws IOException {
         pdfExporter.deleteFiles();
         String speakerId = ctx.queryParam("id");
         pdfExporter.exportSpeakerPdf(speakerId);

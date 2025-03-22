@@ -3,6 +3,7 @@ package Bundestag.Session.Int;
 import Bundestag.Session.Impl.Agenda_File_Impl;
 import org.bson.Document;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -47,5 +48,5 @@ public interface SessionInt {
      */
     Document toDocument();
 
-    String toTex();
+    String toTex() throws IOException;
 }
