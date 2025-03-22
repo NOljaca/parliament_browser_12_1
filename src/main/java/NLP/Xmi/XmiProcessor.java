@@ -25,7 +25,7 @@ public class XmiProcessor {
     private static MongoDBHandler mongoDBHandler;
     private static MongoCollection<Document> casDataColl;
 
-    public static void main(String[] args) {
+    public static void startProcess() {
         Scanner scanner = new Scanner(System.in);
         setCookies(scanner); // Benutzer zur Eingabe der Cookies auffordern
 

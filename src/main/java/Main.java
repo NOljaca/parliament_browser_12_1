@@ -1,6 +1,7 @@
 import Bundestag.Factory.Impl.BundestagFactory;
 import Database.MongoDBHandler;
 import Exporter.PDFExporter;
+import NLP.NLPStructureBuilder;
 import Rest.RESTHandler;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Main {
         mongoDBHandler.createSpeakers(bundestagFactory.getSpeakerMap());
         mongoDBHandler.createMembers(bundestagFactory.getMemberMap());
         mongoDBHandler.createSpeeches(bundestagFactory.getSpeechList());*/
+        NLPStructureBuilder.runNLPAnalysis();
         RESTHandler restHandler = new RESTHandler(mongoDBHandler);
     }
 }

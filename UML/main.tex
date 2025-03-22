@@ -1,0 +1,590 @@
+\documentclass{article}
+
+\usepackage[landscape, margin=0.5cm, a0paper]{geometry}
+\usepackage{tikz}
+\usepackage{tikz-uml}
+\usepackage{xcolor}
+\usetikzlibrary{calc}
+
+\title{PPR - Übungsblatt 2}
+\author{Muhammed Özata}
+
+\begin{document}
+
+\section{Class Diagram}
+
+\begin{tikzpicture}
+
+%Package java
+\begin{umlpackage}{java}
+
+%Package Bundestag
+\begin{umlpackage}{Bundestag}
+
+%Package Session
+\begin{umlpackage}[scale=1.1]{Session}
+
+%Package Int
+\begin{umlpackage}[scale=1.1]{Int}
+
+%Session
+\umlinterface[x=22, y=12]{SessionInt}
+{
+}{
+  + getID(): int \\ + setID(id : int) : void \\ +getTitle() : String \\ +setTitle(title : String) : void \\ + getDate() : Date \\ + setDate(date : Date) : void \\ + getAgendas() : List\textless AgendaInt\textgreater \\ + setAgendas(agendas : List\textless AgendaInt\textgreater) : void \\ + addAgenda(agenda : AgendaInt) \\ + toDocument() : Document
+}
+
+%Agenda
+\umlinterface[x=-7, y=12]{AgendaInt}
+{
+}
+{
+  + getID() : String \\ + setID(id : String) : void \\ + getTitle() : String \\ + setTitle(title : String) : void \\ + getAgendaId() : String \\ + setAgendaId(agendaId : String) : void \\ + getSpeeches() : List\textless SpeechInt\textgreater \\ + setSpeeches(speeches : List\textless Speaker\textgreater) : void \\ - addSpeech(speech : SpeechInt) : void \\ + toDocument() : Document \\ + getSession() : SessionInt \\ + setSession (session : SessionInt) : void
+}
+
+\umlinterface[x=3, y=12]{CommentInt}
+{
+}
+{
+  + getIndex() : int \\ + setIndex(index : int) : void \\ + getContent() : String \\ + setContent(content : String) : void
+}
+
+\umlinterface[x=13, y=12]{SpeechInt}
+{
+}
+{
+  + getID() : String \\ + setID(id : String) : void \\ + getContent() : String \\ + setContent(content : String) : void \\ + getSpeaker() : SpeakerInt \\ + setSpeaker(speaker : SpeakerInt) : void \\ + getComments() : List\textless CommentInt\textgreater \\ + setComments(comments : List\textless CommentInt\textgreater \\ + getSession() : SessionInt \\ + setSession(session : SessionInt) : void \\ + getAgenda() : AgendaInt \\ + setAgenda(agenda : AgendaInt) : void \\ + toDocument() : Document
+}
+
+\end{umlpackage}
+
+%Package Impl
+\begin{umlpackage}{Impl}
+
+\umlclass[x=13, y=3]{SessionFileImpl}
+{
+  id : int \\ title : String \\ date : LocalDate \\ agenda : List\textless AgendaInt\textgreater
+}
+
+\umlclass[x=-10, y=3]{AgendaFileImpl}
+{
+  id : String \\ title : String \\ session : SessionInt \\ speeches : List\textless SpeechInt\textgreater \\ agendaId : String
+}
+
+\umlinterface[x=-3, y=3]{CommentFileImpl}
+{
+    index : int \\ content : String
+}
+
+\umlclass[x=5, y=3]{SpeechFileImpl}
+{
+    id : String \\ speaker : SpeakerInt \\ content : String \\ comments : List\textless CommentInt\textgreater \\ session : SessionInt \\ agenda : AgendaInt 
+}
+
+\end{umlpackage}
+
+\end{umlpackage}
+
+\begin{umlpackage}{Fractions}
+
+\begin{umlpackage}{Int}
+
+%Fraction
+\umlinterface[x=40, y=-7]{FractionInt}
+{
+}
+{
+ + getShortName() : String \\ + setShortName(name : String) : void \\ + getLongName() : String \\ + setLongName(name : String) : void \\ + getMembers() : Set\textless MemberInt\textgreater \\ + setMembers(members : Set\textless MemberInt\textgreater) : void \\ - addMember(member : MemberInt) : void \\ + toDocument() : Document
+}
+
+\end{umlpackage}
+
+\begin{umlpackage}{Impl}
+
+\umlclass[x=50, y=-7]{FractionFileImpl}
+{
+  shortName : String \\ longName : String \\ members : Set\textless MemberInt\textgreater
+}
+
+\end{umlpackage}
+
+\end{umlpackage}
+
+\begin{umlpackage}{Persons}
+
+\begin{umlpackage}{Int}
+
+%Speaker
+\umlinterface[x=40, y=12]{SpeakerInt}
+{}
+{
+  + getSpeech() : List\textless Speech\_File\_Impl\textgreater \\ + setSpeech(speech : + List\textless Speech\_File\_Impl\textgreater) : void \\ + toDocument() : Document \\ + addSpeech(speech : Speech\_File\_Impl) : void
+}
+
+%Member
+\umlclass[x=52, y= 12]{MemberInt}
+{
+}
+{
+  + getID() : String \\ + setID(String : int) : void \\ + getName() : String \\ + setName(name : String) : void \\ + getSurname() : String \\ + setSurname(surname : String) : void \\ + getBirthDate) : LocalDate \\ + setBirthDate(date : LocalDate) : void \\ + getFraction() : FractionInt \\ + setFraction(fraction : FractionInt) : void \\ + getAge() : int \\ + setAge(age : int) \\ + getAcademicTitle() : String \\ + setAcademicTitle(academicTitle : String) : void \\ + getGender() : String \\ + setGender(gender : String) : void \\ + getProfession() : String \\ + setProfession(profession : String) : void \\ + toDocument() : Document \\ + toHTML() : String
+}
+
+\end{umlpackage}
+
+\begin{umlpackage}{Impl}
+
+\umlclass[x=50, y=3]{MemberFileImpl}
+{
+   id : String \\ name : String \\ surname : String \\ age : int \\ birthDate : LocalDate \\ gender : String \\ academicTitle : String \\ profession : String \\ fraction : FractionInt
+}
+
+\umlclass[x=40, y=3]{SpeakerFileImpl}
+{
+   speeches : List\textless Speech\_File\_Impl\textgreater
+}
+
+\end{umlpackage}
+
+\end{umlpackage}
+
+\begin{umlpackage}{Factory}
+
+\begin{umlpackage}{Int}
+
+\umlinterface[x=-18, y=-6]{BundestagFactoryInt} {
+}
+{
+    + getSpeakerMap() : Map\textless String, SpeakerInt\textgreater \\ + getMdBStammdatenReader() : MdbStammdatenReader \\ + getSessionReader() : SessionReader \\ + getMemberMap() : Map\textless String, MemberInt\textgreater \\ + getFractionMap() : Map\textless String, FractionInt\textgreater \\ + getSpeechList() : List\textless SpeechInt\textgreater \\ + getAgendaList() : List\textless AgendaInt\textgreater \\ + getSessionMap() : Map\textless Integer, SessionInt\textgreater \\ + createBundestag() : void \\ + connectToDatabase() : void \\ + saveMembersFactory() : void \\ + getMongoDBHandler() : MongoDBHandler \\ + setMongoDBHandler(mongoDBHandler : MongoDBHandler) : void \\ + createHomepage() : void \\ + createPortfolios() : void
+}
+    
+\end{umlpackage}
+
+\begin{umlpackage}{Impl}
+
+\umlclass[x=-5, y=-6]{BundestagFactory} {
+    mdBStammdatenReader : MdBStammdatenreader \\ sessionReader : SessionReader \\ memberMap : Map\textless String, MemberInt\textgreater \\ speakerMap : Map\textless String, SpeakerInt\textgreater \\ fractionMap : Map\textless String, FractionInt\textgreater \\ speechList : List\textless SpeechInt\textgreater \\ agendaList : List\textless AgendaInt\textgreater \\ sessionMap : Map\textless Integer, SessionInt\textgreater \\ mongoDBHandler : MongoDBHandler
+}
+
+\end{umlpackage}
+
+\begin{umlpackage}{Helper}
+
+\umlclass[x=-11, y=-14]{XMLScraper} {
+} {
++ scrapeXMLsPeriodically() \\ + scrapeAndDownload() \\ + scrapeProtocolDtd(outputDir : File) \\ + downloadAndExtractStammdatenZip() \\ + downloadAndExtractZip(zipUrl : String, outputFolder : String) \\ + unzip(zipFile : File, destDir : File)
+}
+
+\umlclass[x=-11, y=-17]{TagGetterUtil} {
+}{
+    + getTextValueOfTagFromElement(element : Element, tag : String) : String \\ + getTextValueOfTagFromDocument(document : Document, tag :  String)
+}
+
+\umlclass[x=-11, y=-20]{MdBStammdatenReader} {
+    properties : Properties
+}{
+    + readMdBStammdaten() : Document \\ + createMemberAndFractions(memberMap : Map\textless String, MemberInt\textgreater, fractionMap : Map\textless String, FractionInt\textgreater) : void \\ - mapFractionAttributes(mdbElement : Element, fractionMap : Map\textless String, FractionInt\textgreater) : FractionInt \\ - mapMemberAttributes(mdbElement : Element, fraction : FractionInt) : Member\_File\_Impl
+}
+
+\umlclass[x=-11, y=-25]{SessionReader} {
+    properties : Properties \\ sessionXMLs : List\textless Document\textgreater
+}{
+    + readSessionXMLs() : List\textless Document\textgreater \\ + createSessions(sessionMap : Map\textless Integer, SessionInt\textgreater) : void \\ - mapSessionAttributes(document : Document) : Session\_File\_Impl \\ + createAgenda(sessionMap : Map\textless Integer, SessionInt\textgreater, agendaList : List\textless AgendaInt\textgreater) : void \\ - mapAgendaAttributes(agendaElement : Element) : Agenda\_File\_Impl \\ + createSpeechesAndSpeakers(speechList : List\textless SpeechInt\textgreater, memberMap : Map\textless String, MemberInt\textgreater, speakerMap : Map\textless String,        SpeakerInt\textgreater,\\ sessionMap : Map\textless Integer, SessionInt\textgreater, agendaList : List\textless AgendaInt\textgreater, fractionMap : Map\textless String, FractionInt\textgreater) : void \\ - getSpeechSession(sessionMap : Map\textless Integer, SessionInt\textgreater, document : Document) : SessionInt \\ - getSpeechAgenda(agendaList : List\textless AgendaInt\textgreater, speechAgendaId : String, speechSession : SessionInt) : AgendaInt \\ - getSpeakerOfSpeech(speechElement : Element, memberMap : Map\textless String, MemberInt\textgreater, fractionMap : Map\textless String, FractionInt\textgreater, speakerMap : Map\textless String, SpeakerInt\textgreater) : SpeakerInt
+}
+
+\end{umlpackage}
+
+\end{umlpackage}
+
+\begin{umlpackage}{Database}
+
+\umlclass[x=14, y=-6]{MongoDBHandler} {
+    mongoClient : MongoClient \\ mongoDatabase : MongoDatabase \\ host : String \\ database : String \\ user : String \\ password : String \\ port : String \\ collection : String \\ configFilePath : String
+} {
+  createCollection(collection : String) : void \\ + getDataBase() : MongoDatabase \\ + getCollection(collection : String) : MongoCollection + createMembers(memberMap : Map\textless String, MemberInt\textgreater) : void \\ + createFractions(fractionMap : Map\textless String, FractionInt\textgreater) : void \\ + createSpeeches(speechList : List\textless SpeechInt\textgreater) : void
+}
+
+\begin{umlpackage}{Impl}
+
+\umlclass[x=8, y=-13]{AgendaMongoDBImpl} {
+    agenda : AgendaInt \\ agendaDocument : Document
+}
+
+\umlclass[x=8, y=-20]{CommentMongoDBImpl} {
+    id : String \\ commentDocument : Document \\ database : MongoDatabase \\ collection : MongoCollection\textless Document\textgreater \\ query : Document
+}
+
+\umlclass[x=30, y=-14]{FractionMongoDBImpl} {
+    fractionInt : FractionInt \\ fractionDocument : Document \\ shortName : String \\ database : MongoDatabase \\ fractionCollection : MongoCollection\textless Document\textgreater \\ query : Document
+}{
+    + toHTML () : String
+}
+
+\umlclass[x=30, y=-20]{MemberMongoDBImpl} {
+    id : String \\ member : MemberInt \\ memberDocument : Document \\ database : MongoDatabase \\ memberCollection : MongoCollection\textless Document\textgreater \\ query : Document
+}
+
+\umlclass[x=20, y=-22]{SpeakerMongoDBImpl} {
+    id : String \\ speaker : SpeakerInt \\ speakerDocument : Document \\ database : MongoDatabase \\ speakerCollection : MongoCollection\textless Document\textgreater \\ query : Document
+}{
+  + getFractionName() : String \\ + getPictureUrl() : String \\ + getPictureUrlFromJson() : String \\ + getSpeechIds() : List\textless String \textgreater \\ + getSpeechCount() : int \\ + getSortedSpeeches : List\textless SpeechMongoDBImpl\textgreater
+}
+
+\umlclass[x=20, y=-17]{SpeechMongoDBImpl} {
+    id : String \\ speech : SpeechInt \\ speechDocument : Document \\ database : MongoDatabase \\ speechCollection : MongoCollection\textless Document\textgreater \\ query : Document
+}{
+  + toHTML() : String
+}
+
+\umlclass[x=15, y=-13]{SessionMongoDBImpl} {
+    session : SessionInt \\ sessionDocument : Document
+}
+
+\end{umlpackage}
+
+\end{umlpackage}
+
+\begin{umlpackage} {PropertyHandlers}
+\umlclass[x=-25, y=-33]{ServerProperties} {}
+{
+    + loadProperties() : void \\ + getPort() : int
+}
+
+\umlclass[x=-25, y=-37]{DBConnectionProperties} {}
+{
+    + loadFile() : void \\ + getHost() : String \\ + getDatabase() : String \\ + getUser() : String \\ + getPassword() : String \\ + getPort() : String \\ + getCollection() : String
+}
+\end{umlpackage}
+
+\begin{umlpackage} {Rest}
+
+\umlclass[x=-18, y=-35]{RESTHandler} {
+    app : Javalin \\ mongoDBHandler : MongoDBHandler \\ bundestagFactory : BundestagFactory \\ serverProperties : ServerProperties \\  homepageController : HomepageController \\ speechController : SpeechController \\ speakerController : SpeakerController \\ nlpController : NLPController \\ exportController : ExportController
+}
+
+\begin{umlpackage} {Controller}
+\umlclass[x=-10, y=-35]{HomepageController} {
+    mongoDBHandler : MongoDBHandler \\ homepageService : HomepageService
+} {
+    + redirectToHomepage(ctx : Context) : void \\ + getHomepage(ctx : Context) : void
+}
+
+\umlclass[x=-10, y=-39]{SpeechController} {
+    mongoDBHandler : MongoDBHandler \\ speechService : SpeechService
+} {
+    + getSessionsPage(ctx : Context) : void \\ + getSpeechDetailsPage(ctx : Context) : void \\ + getSpeechSearch(ctx : Context) : void \\ + getSearchSpeeches(ctx : Context) : void
+}
+
+\umlclass[x=-10, y=-43]{SpeakerController} {
+    mongoDBHandler : MongoDBHandler \\ speakerService : SpeakerService
+} {
+    + getSpeakerList(ctx : Context) : void \\ + getPortfolio(ctx : Context) : void
+}
+
+\umlclass[x=-10, y=-47]{NLPController} {
+    mongoDBHandler : MongoDBHandler \\ nlpService : NLPService
+} {
+    + getNLPCharts(ctx : Context) : void \\ + getSpeechesForSession(ctx : Context) : void \\ + getChartData(ctx : Context) : void \\ + getChartDataForAllSpeeches(ctx : Context) : void
+}
+
+\umlclass[x=-10, y=-51]{ExportController} {
+    mongoDBHandler : MongoDBHandler \\ exportService : ExportService
+} {
+    + getSessionExports(ctx : Context) : void \\ + getSpeakerExport(ctx : Context) : void
+}
+\end{umlpackage}
+
+\begin{umlpackage} {Service}
+\umlclass[x=0, y=-35]{HomepageService} {
+    mongoDBHandler : MongoDBHandler
+} {
+    + redirectToHomepage(ctx : Context) : void \\ + renderHomepage(ctx : Context) : void
+}
+
+\umlclass[x=10, y=-35]{SpeechService} {
+    mongoDBHandler : MongoDBHandler
+} {
+    + renderSpeechesPage(ctx : Context) : void \\ + renderSpeechDetailsPage(ctx : Context) : void \\ + renderSpeechSearchPage(ctx : Context) : void \\ + fetchSpeeches(ctx : Context) : void
+}
+
+\umlclass[x=20, y=-35]{SpeakerService} {
+    mongoDBHandler : MongoDBHandler
+} {
+    + renderSpeakerList(ctx : Context) : void \\ + renderPortfolio(ctx : Context) : void
+}
+
+\umlclass[x=30, y=-35]{NLPService} {
+    mongoDBHandler : MongoDBHandler
+} {
+    + renderNLPChartsPage(ctx : Context) : void \\ + fetchSpeechesForSession(ctx : Context) : void \\ + fetchChartData(ctx : Context) : void \\ + fetchChartDataForAllSpeeches(ctx : Context) : void
+}
+
+\umlclass[x=25, y=-40]{ExportService} {
+    mongoDBHandler : MongoDBHandler \\ pdfExporter : PDFExporter
+} {
+    + exportSessionPdfs(ctx : Context) : void \\ + exportSpeakerPdf(ctx : Context) : void
+}
+\end{umlpackage}
+
+\begin{umlpackage} {JSON}
+\umlclass[x=45, y=-33]{SpeechJSON} {
+sessionId : String \\ speaker : String \\ speechId : String \\ agendaId : String \\ speakerId : String
+} {}
+
+\umlclass[x=45, y=-36]{SpeakerJSON} {
+id : String \\ nameSurname : String \\ fractionName : String
+} {}
+
+\umlclass[x=45, y=-40]{ToJSONUtil}{}{{+ toJSONArray(list : List\textgreater Map\textgreater String, Object\textless\textless, firstKey : String, secondKey : String) : JSONArray} {}}
+\end{umlpackage}
+\end{umlpackage}
+
+\begin{umlpackage} {Export}
+
+\umlclass[x=70, y=-40]{PDFExporter} {
+- mongoDBHandler : MongoDBHandler \\ TEXDIR : String \\ PDFLATEXCMD : String \\ DATEFORMATTER : DateTimeFormatter
+} {
++ exportSpeakerPdf(speakerId : String) : void \\ + exportSessionsToPDF(sessionIds : List\textless String\textgreater) : void \\ - getSessions(sessionIds : List\textless String\textgreater) : List\textless SessionInt\textgreater \\ - latexBegin() : String \\ - latexEnd() : String \\ - compileLatex(texFileName : String, workingDir : File) : void \\ - deleteFiles() : void \\ - deleteDirectoryContents(directory : File) : void
+}
+\end{umlpackage}
+
+\umlclass[x=70, y=-55]{MongoDBHandler Methods} {} {
++ createAgendas(agendaList : List\textless AgendaInt\textgreater) : void \\ + createSession(sessions : Map\textless Integer, SessionInt\textgreater) : void \\ + createSpeakers(speakers : Map\textless String, SpeakerInt\textgreater \\ + getSpeeches() : List\textless SpeechInt\textgreater \\ + getSessions() : List\textless SessionInt\textgreater \\ + getSessionById(sessionId : string) : SessionInt \\ + getAllSpeechDates() : List\textless String\textgreater \\ + getSpeechesBySession(sessionId : String) : List\textless SpeechJSON\textgreater \\ + getSpeakerNameAndSurname(id : String) : String \\ + getSpeechById(speechId : String) : SpeechInt \\ + getFractions() : List\textless FractionInt\textgreater \\ + getAllSpeakers() : List\textless SpeakerInt\textgreater \\ + getAllSpeakersJson() : List\textless SpeakerJSON\textgreater \\ + getSpeakerByID(id : String) : SpeakerInt \\ + putDocument(collection : MongoCollection, id : String, document : Document, key : String) : void \\ + updateDocument(collection : MongoCollection, oldDocumentId : String, newDocument : Document) : void \\ + deleteDocument(collection : MongoCollection, id : String) : void \\ + countDocuments(collection : MongoCollection) : long \\ + getSentences(id : String) : List\textless Map\textless String, Object\textgreater\textgreater \\ + getNamedEntities(id : String) : List\textless Map\textless String, Object\textgreater\textgreater \\ + getPOSAmountsForSpeeches(speechIds : List\textless String\textgreater) : Map\textless String, Integer\textgreater \\ + getPosAmounts(fractionNames : List\textless String\textgreater, speakerIds : List\textless String\textgreater, dates : List\textless String\textgreater) : Map\textless String, Integer\textgreater \\ - findMatchingSessionIdsForDates(sessionIdsMatchingDates : List\textless Integer\textgreater, dates : List\textless String\textgreater) : void \\  - findMatchingSpeakerIdsForFractions(speakerIdsMatchingFractions : List\textless String\textgreater, fractions : List\textless String\textgreater, speakers : List\textless String\textgreater) : void \\ - findMatchingSpeechIdsForAllFilters(speechIds : List\textless String\textgreater, speakerIdsMatchingFractions : List\textless String\textgreater, sessionIdsMatchingDates : List\textless Integer\textgreater) : void \\ - fillPosAmountsMap(posAmounts : Map\textless String, Integer\textgreater, speechDocs : FindIterable\textless Document\textgreater) : Map\textless String, Integer\textgreater \\ + getTopicsForSpeeches(speeches : List\textless String\textgreater) : Map\textless String, Double\textgreater \\ + getTopics(fractionNames : List\textless String\textgreater, speakerIds : List\textless String\textgreater, dates : List\textless String\textgreater) : Map\textless String, Double\textgreater \\ - fillTopicsMap(topicsMap : Map\textless String, Double\textgreater, speechDocs : FindIterable\textless Document\textgreater) : Map\textless String, Double\textgreater \\ + getAggregatedPOSAmounts() : Map\textless String, Integer\textgreater \\ + getAggregatedTopics() : Map\textless String, Double\textgreater \\ + getSpeechesByText(text : String) : Map\textless String, Object\textgreater
+}
+
+\begin{umlpackage} {NLP}
+\umlclass[x=70, y=-15]{NLPStructureBuilder} {
+} {
+    + runNLPAnalysis(): void
+}
+
+\umlclass[x=82, y=-13]{Restructure} {} {
++ startRestructure() : void \\ -  processDependencies(casDoc : Document) : Map\textgreater String, List\textgreater String\textless\textless \\ -  processNamedEntities(casDoc : Document) : Map\textgreater String, List\textgreater String\textless\textless \\ - processPosTags(casDoc : Document) : Map\textgreater String, List\textgreater String\textless\textless \\ - processSentences(casDoc : Document) : Map\textgreater String, Double\textless \\ - processTopics(casDoc : Document) : Map\textgreater String, List\textgreater List\textgreater Object\textless\textless\textless \\ - log(message : String) : void \\ - static logError(message : String, e : Exception) : void
+}
+
+\begin{umlpackage}{DataNLP}
+\umlclass[x=60, y=-10]{NLPMain} {
+} {
++ startProcess() : void \\ + runNLPProcess() : void
+} 
+
+\umlclass[x=65, y=-5]{Initialize} {
+} {
++ processJCas(jCas : JCas) : void \\ - initComposer() : void \\ - initDockerDriver() : void \\ - addSpacyComponent() : void \\ - addGerVaderComponent() : void \\ - addParlBERTComponent() : void} 
+
+\umlclass[x=70, y=-10]{Extraction} {}
+{+ extractTopics(jCas : JCas) : List\textgreater String\textless \\ + extractTokens(jCas : JCas) : List\textgreater String\textless \\ + extractPOSTags(jCas : JCas) : List\textgreater String\textless \\ + extractDependencies(jCas : JCas) : List\textgreater String\textless \\ + extractNamedEntities(jCas : JCas) : List\textgreater String\textless \\ + extractAnalysisResults(jCas : JCas) : List\textgreater String\textless \\ + extractLemmas(jCas : JCas) : List\textgreater String\textless \\ + extractSentences(jCas : JCas) : List\textgreater String\textless \\}
+
+\end{umlpackage}
+
+\begin{umlpackage}{jCas}
+\umlclass[x=80, y=-5]{jCasConverter} {} {
++ convert(speech : Speech) : JCas
+}
+
+\umlclass[x=80, y=-8]{CaseSerialization}{}{
++ saveCas(jcas : JCas, file : File) : void \\ + loadCas(file : File) : JCas
+}
+\end{umlpackage}
+
+\begin{umlpackage}{Model}
+\umlclass[x=86.5, y=-5]{Speechh}{
+- id : String \\ - text : String
+} {
++ getId : String() \\ + setId(id : String) : void \\ + getText() : String \\ + setText(text : String) : void
+}
+\end{umlpackage}
+
+\begin{umlpackage} {XMI}
+
+\umlclass[x=60, y=-20]{XmiProcessor} {
+- REPO_URL : String \\ - OUTPUT_DIR : String \\ - COLLECTION_NAME : String \\ - cookieManager : CookieManager \\ - mongoDBHandler : MongoDBHandler \\ - casDataColl : MongoCollection\textgreater Document\textless
+} {
++ startProcess() : void \\ - runNLPProcess() : void \\ - establishMongoConnection() : void \\ - setCookies(scanner : Scanner) : void \\ - downloadFileWithCookies(fileUrl : String, outputFile : String) : void \\ existsInDatabase(speechId : String) : boolean
+}
+
+\umlclass[x=60, y=-27]{XmiProcessor2} {
+- REPO_URL : String \\ - OUTPUT_DIR : String \\ - COLLECTION_NAME : String \\ - cookieManager : CookieManager \\ - mongoDBHandler : MongoDBHandler \\ - casDataColl : MongoCollection\textgreater Document\textless
+} {
++ startProcess() : void \\ - runNLPProcess() : void \\ - establishMongoConnection() : void \\ - setCookies(scanner : Scanner) : void \\ - downloadFileWithCookies(fileUrl : String, outputFile : String) : void \\ existsInDatabase(speechId : String) : boolean
+}
+
+\umlclass[x=77, y=-24]{XmiParser}{}{
++ parseXmiToDocument(filePath : String, speechId : String) : Document \\ - extractTokens(xmlDoc : Document, tokenNodes : NodeList, tokens : List\textgreater String\textless) Map\textgreater String, String\textless \\ - extractPosTags(xmlDoc : Document, posNodes : NodeList, tokenMap : Map\textgreater String, String\textless, posTags : List\textgreater String\textless) : void \\ - extractLemmas(lemmaNodes : NodeList, lemmas : List\textgreater String\textless) : void \\ - extractDependencies(dependencyNodes : NodeList, tokenMap : Map\textgreater String, String\textless, dependencies : List\textgreater String\textless) : void \\ - extractNamedEntities(xmlDoc : Document, namedEntityNodes : NodeList, namedEntities : List\textgreater String\textless) : void \\ - extractTopics(xmlDoc : Document, topicNodes : NodeList, sentencesWithTopics : List\textgreater String\textless) : void \\ - extractSentencesWithSentiment(xmlDoc : Document, sentenceNodes : NodeList, sentimentNodes : NodeList, sentences : List\textgreater String\textless) : void \\ getTextFromSofa(xmlDoc : Document, sofaId : String, begin : int, end : int): String
+}
+\end{umlpackage}
+
+\end{umlpackage}
+\end{umlpackage}
+
+%Inheritance: Speaker inherits from Member (id, name etc.)
+\umlinherit{SpeakerInt}{MemberInt}
+
+%A member can be part of none or one fraction, but exists without one.
+%A fraction has any number of members.
+\umlaggreg[mult1=*, mult2=0..1, pos2=0.05, pos1=0.95]{FractionInt}{MemberInt}
+
+%implementations
+\umlimpl{MemberFileImpl}{MemberInt}
+\umlimpl{SpeakerFileImpl}{SpeakerInt}
+\umlimpl{FractionFileImpl}{FractionInt}
+\draw[dashed, -open triangle 45](SpeakerMongoDBImpl.east) -- ++(11,0) -| ++(0,34) -- (SpeakerInt.west);
+\draw[dashed, -open triangle 45](MemberMongoDBImpl.east) -- ++(20,0) -- ($(MemberInt.south) + (2,0)$);
+\umlimpl{FractionMongoDBImpl}{FractionInt}
+\umlimpl{SessionFileImpl}{SessionInt}
+\umlimpl{SpeechFileImpl}{SpeechInt}
+\umlimpl{CommentFileImpl}{CommentInt}
+\umlimpl{AgendaFileImpl}{AgendaInt}
+\umlimpl{BundestagFactory}{BundestagFactoryInt}
+\draw[dashed, -open triangle 45](AgendaMongoDBImpl.west) -- ++(-2,0) |- ++(-10, 12) -- (AgendaInt.south);
+\draw[dashed, -open triangle 45](SessionMongoDBImpl.east) -- ++(15,5) |- ++(0, 12) -- (SessionInt.south);
+\draw[dashed, -open triangle 45](SpeechMongoDBImpl.west) -- ++(-15,0) |- ++(0, 23) -- (SpeechInt.south west);
+
+%associations
+\umlassoc[]{RESTHandler}{ServerProperties}
+\umlassoc[]{RESTHandler}{HomepageController}
+\umlassoc[]{HomepageService}{HomepageController}
+\umlassoc[]{SpeechService}{SpeechController}
+\umlassoc[]{NLPStructureBuilder}{Restructure}
+\umlassoc[]{NLPStructureBuilder}{NLPMain}
+\umlassoc[]{NLPStructureBuilder}{XmiProcessor}
+\umlassoc[]{NLPStructureBuilder}{XmiProcessor2}
+\umlassoc[]{XmiParser}{XmiProcessor}
+\umlassoc[]{XmiParser}{XmiProcessor2}
+\umlassoc[]{Extraction}{NLPMain}
+\umlassoc[anchor1=south]{MongoDBHandler}{NLPMain}
+\umlassoc[]{Initialize}{NLPMain}
+\umlassoc[]{Initialize}{jCasConverter}
+\umlassoc[]{Speechh}{jCasConverter}
+
+\draw[solid] (NLPMain.north) -- ++(0, 1.7) --(CaseSerialization);
+\draw[solid] (XmiProcessor.north) -- ++(0, 4) -- ++(-40, 3) -- (MongoDBHandler);
+\draw[solid] (XmiProcessor2.west) -- ++(-2, 0) -- ++(0, 15) -- ++(-38, 2) -- (MongoDBHandler);
+
+\draw[solid] (SessionReader.north east) ++(-1, 0) -- ++(0,2) -- (BundestagFactory.south);
+\draw[solid] (MdBStammdatenReader.north east) ++(-1, 0) -- (BundestagFactory.south);
+\umlassoc[]{MdBStammdatenReader}{TagGetterUtil}
+\draw[solid] (SessionReader.north west) ++(1, 0) -- ++(0,5) -- (TagGetterUtil.west);
+\umlassoc[]{BundestagFactory}{AgendaFileImpl}
+\umlassoc[]{BundestagFactory}{CommentFileImpl}
+\umlassoc[]{BundestagFactory}{SpeechFileImpl}
+\umlassoc[]{SpeechFileImpl}{CommentFileImpl}
+\umlassoc[]{BundestagFactory}{SessionFileImpl}
+\umlassoc[]{FractionFileImpl}{MemberFileImpl}
+\umlassoc[]{FractionFileImpl}{SpeakerFileImpl}
+\umlassoc[]{FractionMongoDBImpl}{MemberMongoDBImpl}
+\umlassoc[]{SpeakerMongoDBImpl}{SpeechMongoDBImpl}
+\umlassoc[]{BundestagFactory}{MongoDBHandler}
+\umlassoc[]{MongoDBHandler}{AgendaMongoDBImpl}
+\umlassoc[]{MongoDBHandler}{SessionMongoDBImpl}
+\umlassoc[]{MongoDBHandler}{FractionMongoDBImpl}
+\umlassoc[]{CommentMongoDBImpl}{SpeechMongoDBImpl}
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-9) -- (CommentMongoDBImpl.east);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-10) -- (SpeakerMongoDBImpl.west);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-7) -- (SpeechMongoDBImpl.west);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(28,0) -- (SpeechJSON.north);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(13,0) -- (ExportService.north);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(18,0) -- (NLPService.north);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(8,0) -- (SpeakerService.north);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(-2,0) -- (SpeechService.north);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(-12,0) -- (HomepageService.north);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(-22,0) -- (HomepageController.north);
+\draw[solid] (MongoDBHandler.south east) -- ++(30,-1) -- ++(0,-20) -- (PDFExporter.west);
+\draw[solid] (ExportService.south) -- ++(0,-2) -- ++(30,0) -- (PDFExporter.west);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(-30,0) -- (RESTHandler.north);
+\draw[solid] (BundestagFactory.south) -- ++(0,-2) -- ++(-22,0) -- ++(0,-16) --(RESTHandler.north);
+\draw[solid] (SpeakerService.south) -- ++(0,-1) -- ++(-20,0) --(SpeakerController.east);
+\draw[solid] (NLPService.south) -- ++(0,-1) -- ++(-30,0) --(NLPController.east);
+\draw[solid] (ExportService.west) -- ++(-25,0) --(ExportController.east);
+\draw[solid] (MongoDBHandler.south east) ++(0,1) -- ($(MemberMongoDBImpl.north) + (-1,0)$);
+\draw[solid] (BundestagFactory.north) -- ++(0,3) |- ++(40,0) -- (MemberFileImpl.west);
+\draw[solid] (BundestagFactory.north) -- ++(2,3) -- (SpeakerFileImpl.west);
+\draw[solid] (SessionFileImpl.north) -- ++(0,2) |- ++(-20,0) -- (AgendaFileImpl.north);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(-17,0) -- ++(0, -20) -- (ExportController.east);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(-17,0) -- ++(0, -16) -- (NLPController.east);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(-17,0) -- ++(0, -10) -- (SpeakerController.east);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(-17,0) -- ++(0, -5) -- (SpeechController.east);
+\draw[solid] (MongoDBHandler.south) ++(-2,0) -- ++(0,-20) -- ++(-34,0) -- ++(0, -5) -- (DBConnectionProperties.east);
+
+\end{umlpackage}
+
+\end{tikzpicture}
+
+\section{Use-Case Diagram}
+
+\begin{center}
+\begin{tikzpicture}
+\begin{umlsystem}[fill=yellow!10]{Bundestag}
+\umlusecase[x=7, name=create]{create Bundestag}
+\umlusecase[x=0, y=-1, name=readMdb]{read MdBStammdaten}
+\umlusecase[name=readSess, y=0, x=15]{read session-xmls}
+\umlusecase[x=0, y=-3, name=createFM]{create fractions and members}
+\umlusecase[x=11, y=-2, name=createSpeeches]{create speeches}
+\umlusecase[x=15, y=-2, name=createSpeakers]{create speakers}
+\umlusecase[x=20, y=0, name=createSessions]{create sessions}
+\umlusecase[x=20, y=-2, name=createAgendas]{create agendas}
+\umlusecase[x=7, y=-4, name=createColl]{create collections}
+\umlusecase[x=0, y=-5, name=saveF]{save fractions}
+\umlusecase[x=11, y=-3, name=saveSpee]{save speeches}
+\umlusecase[x=14.5, y=-3, name=saveSpea]{save speakers}
+\umlusecase[x=15, y=-4, name=saveSess]{save sessions}
+\umlusecase[x=14, y=-5, name=saveA]{save agendas}
+\umlusecase[x=1, y=-4, name=saveM]{save members}
+\umlusecase[x=7, y=-4, name=createColl]{create collections}
+\umlusecase[x=7, y=-6, name=createConn]{create connection}
+\umlusecase[x=1, y=-11, name=startWebServer]{start web-server}
+\umlusecase[x=8, y=-8, name=renderHomepage]{render Homepage}
+\umlusecase[x=15, y=-8, name=fetchSessions]{fetch all sessions}
+\umlusecase[x=15, y=-12, name=fetchSpeakers]{fetch all speakers}
+\umlusecase[x=8, y=-10, name=renderPortfolio]{render speaker-portfolio}
+\umlusecase[x=15, y=-10, name=fetchSpeaker]{fetch speaker-infos}
+\umlusecase[x=8, y=-12, name=renderSpeakerList]{render speaker-list-page}
+\umlusecase[x=8, y=-14, name=renderSpeech]{render speech-search-page}
+\umlusecase[x=8, y=-16, name=renderNLP]{render NLP-charts-page}
+\umlusecase[x=15, y=-14, name=fetchSpeeches]{fetch speeches}
+\umlusecase[x=16, y=-16, name=analyzeSpeech]{analyze speech}
+\end{umlsystem}
+
+\umlactor[x=-6, y=-3]{Factory}
+\umlactor[x=25, y=-6]{MongoDBHandler}
+\umlactor[x=25, y=-12]{NLPStructureBuilder}
+\umlactor[x=-6, y=-11]{RESTHandler}
+\draw[solid] (Factory.north) -- ++(0,2.2) -- (create.west);
+\draw[solid] (MongoDBHandler.west) -- ++(-12,0) -- (createColl.south east);
+\umlassoc[]{RESTHandler}{startWebServer}
+\umlinclude[]{startWebServer}{renderHomepage}
+\umlinclude[]{startWebServer}{renderPortfolio}
+\umlinclude[]{startWebServer}{renderSpeakerList}
+\umlinclude[]{startWebServer}{renderSpeech}
+\umlinclude[]{startWebServer}{renderNLP}
+\umlinclude[]{renderHomepage}{fetchSessions}
+\umlinclude[]{renderPortfolio}{fetchSpeaker}
+\umlinclude[]{renderSpeakerList}{fetchSpeakers}
+\umlinclude[]{renderSpeech}{fetchSpeeches}
+\umlinclude[]{renderNLP}{analyzeSpeech}
+\umlassoc[]{MongoDBHandler}{fetchSessions}
+\umlassoc[]{MongoDBHandler}{fetchSpeakers}
+\umlassoc[]{MongoDBHandler}{fetchSpeaker}
+\umlassoc[]{MongoDBHandler}{fetchSpeeches}
+\umlassoc[]{MongoDBHandler}{createConn}
+\umlassoc[]{NLPStructureBuilder}{analyzeSpeech}
+\umlinclude{analyzeSpeech}{fetchSpeeches} 
+\umlinclude[name=create-readMdb]{create}{readMdb} 
+\umlinclude[name=create-readSess]{create}{readSess}
+\umlinclude[name=readMdb-createFM]{readMdb}{createFM}
+\umlinclude[name=readSess-createSpeeches]{readSess}{createSpeeches}
+\umlinclude[name=readSess-createSpeakers]{readSess}{createSpeakers}
+\umlinclude[name=readSess-createSessions]{readSess}{createSessions}
+\umlinclude[name=readSess-createAgendas]{readSess}{createAgendas}
+\umlextend{createColl}{create}
+\umlinclude[name=createColl-saveF]{createColl}{saveF} 
+\umlinclude[name=createColl-saveM]{createColl}{saveM}
+\umlinclude[name=createColl-saveSpee]{createColl}{saveSpee} 
+\umlinclude[name=createColl-saveSpea]{createColl}{saveSpea}
+\umlinclude[name=createColl-saveSess]{createColl}{saveSess} 
+\umlinclude[name=createColl-saveA]{createColl}{saveA}
+\umlinclude[name=createColl-createConn]{createColl}{createConn}
+%\draw[dashed, ->] (org_sess.south east) -- (agenda.north) node[above]{\textless\textless include\textgreater\textgreater};
+
+\end{tikzpicture}
+\end{center}
+\end{document}

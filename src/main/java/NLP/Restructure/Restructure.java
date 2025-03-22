@@ -30,7 +30,7 @@ public class Restructure {
      *
      * @param args Konsolenargumente (nicht benötigt)
      */
-    public static void main(String[] args) {
+    public static void startRestructure() {
         try {
             MongoDBHandler mongoDBHandler = new MongoDBHandler();
             MongoCollection<Document> casDataColl = mongoDBHandler.getDatabase().getCollection("casData");
