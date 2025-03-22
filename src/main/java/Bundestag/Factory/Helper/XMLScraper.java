@@ -21,7 +21,7 @@ import java.util.zip.ZipInputStream;
  * This class handles scheduled scraping of plenary session protocols in XML format,
  * downloading of DTD files for parsing these protocols, and handling speaker
  *
- * @author Adeola Aduroja
+ * @author Adeola
  */
 public class XMLScraper {
 
