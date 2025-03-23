@@ -2,6 +2,7 @@ package Bundestag.Factory.Impl;
 
 import Bundestag.Factory.Helper.MdBStammdatenReader;
 import Bundestag.Factory.Helper.SessionReader;
+import Bundestag.Factory.Helper.XMLScraper;
 import Bundestag.Factory.Int.BundestagFactoryInt;
 import Bundestag.Fractions.Int.FractionInt;
 import Bundestag.Persons.Int.MemberInt;
@@ -103,14 +104,16 @@ public class BundestagFactory implements BundestagFactoryInt {
      */
     @Override
     public void createBundestag() throws FileNotFoundException {
+        XMLScraper.downloadAndExtractStammdatenZip();
+        XMLScraper.scrapeAndDownload();
         System.out.println("reading sessions");
         sessionReader.readSessionXMLs();
         System.out.println("read sessions");
         mdBStammdatenReader.createMembersAndFractions(memberMap, fractionMap);
         System.out.println("stammdaten read");
         sessionReader.createSessions(sessionMap);
-        System.out.println(sessionMap);
         sessionReader.createAgenda(sessionMap, agendaList);
         sessionReader.createSpeechesAndSpeakers(speechList, memberMap, speakerMap, sessionMap, agendaList, fractionMap, commentList);
+        XMLScraper.scrapeXMLsPeriodically();
     }
 }
