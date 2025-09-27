@@ -1,0 +1,362 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "paths": {
+    "/export/sessions": {
+      "get": {
+        "tags": [
+          "Export"
+        ],
+        "summary": "Get pdf for selected session(s)",
+        "description": "Generates the pdfs for selected session(s)",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "description": "The session-ID(s)",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/export/speaker": {
+      "get": {
+        "tags": [
+          "Export"
+        ],
+        "summary": "Get pdf for selected speaker",
+        "description": "Generates the pdf for selected speaker",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The speaker-ID",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/home": {
+      "get": {
+        "tags": [
+          "Homepage"
+        ],
+        "summary": "Get homepage",
+        "description": "Fetches the homepage view.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/nlpcharts": {
+      "get": {
+        "tags": [
+          "NLP"
+        ],
+        "summary": "Get nlp-charts",
+        "description": "Fetches the nlp-charts view.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/nlpcharts/chartdata": {
+      "get": {
+        "tags": [
+          "NLP"
+        ],
+        "summary": "Get chart-data for selected filter(s)",
+        "description": "Fetches the chart-data for selected filter(s)",
+        "parameters": [
+          {
+            "name": "speechids",
+            "in": "query",
+            "description": "The speech-IDs selected by the user",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fractions",
+            "in": "query",
+            "description": "The fraction-names selected by the user",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "speakers",
+            "in": "query",
+            "description": "The speakers selected by the user",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dates",
+            "in": "query",
+            "description": "The dates selected by the user",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/nlpcharts/fetchchartdataforallspeeches": {
+      "get": {
+        "tags": [
+          "NLP"
+        ],
+        "summary": "Get chart-data for all speeches",
+        "description": "Fetches the chart-data for all speeches",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/nlpcharts/sessionchange": {
+      "get": {
+        "tags": [
+          "NLP"
+        ],
+        "summary": "Get speeches for selected session",
+        "description": "Fetches the sessions for selected session",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The session-ID",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/speakers": {
+      "get": {
+        "tags": [
+          "Speaker"
+        ],
+        "summary": "Get speaker-list",
+        "description": "Fetches the speaker-list view.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/speakers/portfolio": {
+      "get": {
+        "tags": [
+          "Speaker"
+        ],
+        "summary": "Get portfolio for speaker",
+        "description": "Fetches the homepage view.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The speaker-ID",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/speeches": {
+      "get": {
+        "tags": [
+          "Speech"
+        ],
+        "summary": "Get speech-list",
+        "description": "Fetches the speech-list view.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The session-ID",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/speeches/searchspeeches": {
+      "get": {
+        "tags": [
+          "Speech"
+        ],
+        "summary": "Get speech-search-page.",
+        "description": "Fetches the speech-search view.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/speeches/searchspeeches/fetchspeeches": {
+      "get": {
+        "tags": [
+          "Speech"
+        ],
+        "summary": "Get List of speech-id\u0027s",
+        "description": "Fetches a list of the id\u0027s of speeches which mach with given text.",
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "description": "The substring of wanted speech",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/speeches/speechdetails": {
+      "get": {
+        "tags": [
+          "Speech"
+        ],
+        "summary": "Get speech-details",
+        "description": "Fetches the speech-details view.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The speech-ID",
+            "required": false,
+            "deprecated": false,
+            "allowEmptyValue": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}

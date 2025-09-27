@@ -25,7 +25,7 @@ public class NLPStructureBuilder {
         // Flags zur Steuerung der Verarbeitungsschritte
         boolean runXmiProcessor = false;  // Setze auf `false`, um XmiProcessor zu deaktivieren
         boolean runXmiProcessor2 = false; // Setze auf `false`, um XmiProcessor2 zu deaktivieren
-        boolean runNLPMain = true;        // Setze auf `false`, um NLPMain zu deaktivieren
+        boolean runNLPMain = false;        // Setze auf `false`, um NLPMain zu deaktivieren
         boolean runRestructure = true;    // Setze auf `false`, um Restructure zu deaktivieren
 
         try {
