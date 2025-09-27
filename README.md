@@ -1,93 +1,106 @@
 # Parliament_Browser_12_1
 
+# NLP Prozessbeschreibung
+
+Dieses Projekt beinhaltet eine NLP-Pipeline, die XMI-Dateien verarbeitet, Speeches analysiert und das Ergebnis in einer MongoDB-Datenbank speichert. Die wichtigsten Komponenten des Systems sind die `XmiProcessor`-Klassen, die für die Verarbeitung der XMI-Daten verantwortlich sind. Diese Klassen benötigen spezielle Cookies, um auf die Dateien zuzugreifen.
+
+## Wichtige Cookies
+Für den Zugriff auf das GitLab-Repository, von dem XMI-Dateien heruntergeladen werden, sind drei wichtige Cookies erforderlich:
+
+- **known_sign_in**: Wird für die Authentifizierung verwendet.
+- **session_id**: Wird für die Sitzung verwendet.
+- **preferred_language**: Gibt die bevorzugte Sprache für die Anwendung an.
+
+### Cookies einsehen
+Um diese Cookies zu erhalten, müssen Sie sich in GitLab anmelden und dann die Entwicklertools in Ihrem Browser öffnen (F12). Gehen Sie dann zu **Application** -> **Storage** -> **Cookies**, um die Cookies zu sehen. Die relevanten Cookies sind:
+
+- **_gitlab_session**: Sitzungs-ID
+- **known_sign_in**: Authentifizierung
+- **preferred_language**: Bevorzugte Sprache
+
+## Klassenbeschreibung
+
+### 1. **`Extraction`**
+Diese Klasse stellt statische Methoden zur Extraktion von Informationen aus einem `JCas` (Java Common Analysis Structure) zur Verfügung. Die wichtigsten Methoden sind:
+
+- `extractTopics(JCas jcas)`: Extrahiert Themen aus dem JCAS.
+- `extractTokens(JCas jcas)`: Extrahiert Tokens.
+- `extractPOSTags(JCas jcas)`: Extrahiert POS-Tags (Parts of Speech).
+- `extractDependencies(JCas jcas)`: Extrahiert Abhängigkeiten.
+- `extractNamedEntities(JCas jcas)`: Extrahiert benannte Entitäten.
+- `extractAnalysisResults(JCas jcas)`: Extrahiert Analyseergebnisse.
+- `extractLemmas(JCas jcas)`: Extrahiert Lemmas.
+- `extractSentences(JCas jcas)`: Extrahiert Sätze.
+
+### 2. **`Initialize`**
+Diese Klasse initialisiert die NLP-Pipeline, indem sie die verschiedenen Komponenten (z.B. spaCy, GerVader, ParlBERT) hinzufügt und die Verbindung zu Docker und den erforderlichen Treibern herstellt.
+
+- `Initialize()`: Konstruktor.
+- `processJCas(JCas jcas)`: Startet den Verarbeitungsprozess für ein JCAS.
+- `initComposer()`, `initDockerDriver()`, `addSpacyComponent()`, `addGerVaderComponent()`, `addParlBERTComponent()`: Initialisieren verschiedene NLP-Komponenten.
+
+### 3. **`NLPMain`**
+Diese Klasse enthält die Hauptlogik für die Ausführung der NLP-Analyse.
+
+- `main(String[] args)`: Startet die Anwendung.
+- `runNLPProcess()`: Führt den NLP-Verarbeitungsprozess aus.
+
+### 4. **`JCasConverter`**
+Diese Klasse konvertiert eine `Speech`-Instanz in ein `JCas`-Objekt.
+
+- `convert(Speech speech)`: Konvertiert eine Speech in ein JCAS.
+
+### 5. **`CaseSerialization`**
+Stellt Methoden zur Verfügung, um das `JCas` zu speichern und zu laden.
+
+- `saveCas(JCas jcas, File file)`: Speichert das `JCAS` in einer Datei.
+- `loadCas(File file)`: Lädt ein `JCAS` aus einer Datei.
+
+### 6. **`Speech`**
+Eine Klasse, die eine Rede modelliert.
+
+- `Speech(String id, String text)`: Konstruktor zur Erstellung einer Speech mit ID und Text.
+- `getId()`, `setId(String id)`: Getter und Setter für die ID der Rede.
+- `getText()`, `setText(String text)`: Getter und Setter für den Text der Rede.
+
+### 7. **`Restructure`**
+Diese Klasse verarbeitet und strukturiert die Analyseergebnisse und speichert sie in der MongoDB.
+
+- `processDependencies(Document casDoc)`: Verarbeitet Abhängigkeiten.
+- `processNamedEntities(Document casDoc)`: Verarbeitet benannte Entitäten.
+- `processPosTags(Document casDoc)`: Verarbeitet POS-Tags.
+- `processSentences(Document casDoc)`: Verarbeitet Sätze.
+- `processTopics(Document casDoc)`: Verarbeitet Themen.
+- `log(String message)`, `logError(String message, Exception e)`: Loggt Nachrichten und Fehler.
+
+### 8. **`XmiParser`**
+Diese Klasse parst XMI-Dateien und extrahiert verschiedene Analyseergebnisse.
+
+- `parseXmiToDocument(String filePath, String speechId)`: Parsen einer XMI-Datei in ein `Document`.
+- Weitere Methoden extrahieren Tokens, POS-Tags, Lemmas, Abhängigkeiten, benannte Entitäten, Themen und Sätze.
+
+### 9. **`XmiProcessor`**
+Die Hauptklasse zur Verarbeitung von XMI-Dateien. Diese Klasse verwendet Cookies, um die XMI-Dateien von GitLab herunterzuladen.
+
+- `setCookies(Scanner scanner)`: Setzt die benötigten Cookies (z.B. `known_sign_in`, `session_id`).
+- `downloadFileWithCookies(String fileUrl, String outputFile)`: Lädt eine XMI-Datei mit Cookies herunter.
+- `existsInDatabase(String speechId)`: Überprüft, ob eine Analyse für eine Rede bereits in der Datenbank existiert.
+- `runNLPProcess()`: Startet den Verarbeitungsprozess.
+
+### 10. **`XmiProcessor2`**
+Eine alternative Version der `XmiProcessor`-Klasse, die ebenfalls XMI-Dateien verarbeitet und die gleichen Methoden wie `XmiProcessor` enthält.
+
+## Ausführung der Anwendung
 
 
-## Getting started
+Um die Anwendung auszuführen, stellen Sie sicher, dass die benötigten Cookies (z.B. `known_sign_in`, `session_id`) korrekt gesetzt sind und das die geeigneten Docker Initialisiert sind um die NLP-Verarbeitung zu ermöglichen. Diese Cookies können über die Entwicklertools im Browser extrahiert werden. Verwenden Sie dann die `XmiProcessor`-Klasse oder `XmiProcessor2`, um XMI-Dateien zu verarbeiten und die Analyseergebnisse zu speichern.
+Falls Sie Ihre eigene Datenbank verwenden wollen, müssen Sie die mongodb.properties-Datei anpassen, da die Datenbank-Credentials aus diesem Dokument gezogen werden.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Die Anwendung startet damit, die Protokoll-XMLs und die MdB-Stammdaten-XMLs aus der Bundestags-Webseite herunterzuladen, diese werden unter src/main/resources abgespeichert.
+Danach fängt das Parsen der Dokumente an, hier werden die Reden, Sitzungen, MdBs, Redner, Tagesordnungspunkte, Kommentare und Fraktionen auf unsere Klassenstrukturen abgebildet.
+Anschließend werden diese Daten in eigenen Collections in der Datenbank abgespeichert und die NLP-Analyse der Reden beginnt. Hier werden die Analysen von Prof. Abrami geparst und in der Collection abgespeichert und die restlichen, unverarbeiteten Reden werden auf ihre NLP-Daten analysiert.
+Nachdem die Anwendung mit der Analyse fertig ist startet der Javalin-Webservice auf dem Port 8080 (siehe server.properties). Für die Nutzung der Webseite sehen Sie sich bitte das Benutzerhandbuch an.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Lizenz
 
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin http://ppr.gitlab.texttechnologylab.org/muhammedozata/parliament_browser_12_1.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](http://ppr.gitlab.texttechnologylab.org/muhammedozata/parliament_browser_12_1/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Dieses Projekt ist unter der MIT-Lizenz lizenziert.
